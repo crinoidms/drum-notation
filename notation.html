@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drum Notation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="all.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+        <div id="page">
+            <div class="outer d-flex justify-content-center disappear" style="transition: 0s;" @click="editTitle" :class="{ active : titleShowing}">
+                <div class="title">{{title}}</div>
+            </div>
+            <div class="outer d-flex justify-content-center red-border disappear" style="transition: 0s;" :class="{ active : titleEditing}">
+                <div class="d-flex">
+                    <input type="text" value="基本伴奏" v-model="tempTitle" maxlength="30" placeholder="請輸入標題"
+                        style="font-size: 20px; padding: 5px 20px;"></input>
+                    <button type="button" class="btn btn-outline-dark ml-3" @click="cancelTitleChange">取消</button>
+                    <button type="button" class="btn btn-outline-info ml-2" @click="submitNewTitle">確定修改</button>
+                </div>
+            </div>
+            <div class="padding-space"></div>
+        <!-- 主要鼓譜 -->
+            <div class="outer" v-for="(item, index) in drumList" @click="clickBeat(index)" :class="{ noborder : isOutputing }">
+                <div class="d-flex">
+                    <div class="d-flex" v-if="item.type === 'note'">
+                        <div class="note" :class="{ disappear :  !item.title }">{{item.title}}</div>
+                        <div class="ps">{{item.note}}</div>
+                    </div>
+                    <div class="instrument" v-else="item.type !== 'note'">
+                        <h2>{{item.title}}</h2> 
+                    </div>
+                    <div v-if="item.type === 'djembe'">
+                        <div class="relative">
+                            <div class="d-flex">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <div class="sound d-flex">
+                                <div v-for="i in item.beat">{{ i==='-' ? '&ensp;' : i }}</div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div v-if="item.type === 'dum-dum'">
+                        <div class="relative">
+                            <div class="baz d-flex">
+                                <div v-for="i in item.baz">{{ i==='-' ? '&ensp;' : '&#10005;' }}</div> 
+                            </div>
+                            <div class="d-flex">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <div class="symbol d-flex">
+                                <div v-for="i in item.beat">{{ i==='-' ? '&ensp;' : i }}</div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mt-2 disappear" :ref="'drumBeat'+index">
+                    <!-- <button type="button" class="btn btn-outline-dark":class="{ disabled : index === 0 }">上移</button>
+                    <button type="button" class="btn btn-outline-dark ml-3 mr-5" :class="{ disabled : index === drumList.length-1 }">下移</button> -->
+                    <button type="button" class="btn btn-outline-dark ml-3" @click="editBeats(index)">編輯</button>
+                    <button type="button" class="btn btn-outline-danger ml-2" :class="{ disabled : isEditing } "  @click="deleteBeats(index)">刪除</button>
+                </div>
+            </div>
+        </div> <!-- page 結束 -->
+
+
+        <!-- 無資料時的Demo畫面 -->
+        <div style="text-align: end; opacity: 0.4; margin-right: 50px;" v-if="noData">※ 本網頁未支援存檔功能，編輯完成請記得「匯出」</div>
+        <div class="d-flex demo" v-for="(item, key) in demoDrum" :key="item.title" v-if="noData">
+            <div class="d-flex" v-if="item.type === 'note'">
+                <div class="note" :class="{ disappear :  !item.title }">{{item.title}}</div>
+                <div class="ps">{{item.note}}</div>
+            </div>
+            
+            <div class="instrument d-flex" v-else="item.type !== 'note'">
+                <h2>{{item.title}}</h2> 
+            </div>
+            <div v-if="item.type === 'djembe'">
+                <div class="relative">
+                    <div class="d-flex">
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                    </div>
+                    <div class="sound d-flex">
+                        <div v-for="i in item.beat">{{ i==='-' ? '&ensp;' : i }}</div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+        <!-- Note 編輯 -->
+        <div class="outer editing" :class="{ active: noteEditing }">
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增標註</h2>
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改標註</h2>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="noteBox">段落標註</label>
+                    <input type="text" class="form-control" id="noteBox" placeholder="如：基本伴奏" v-model="tempDrum.title" maxlength="15"
+                        style="font-size:24px; font-weight:500; color: #000;">
+                </div>
+                <div class="form-group col-md-9">
+                    <label for="noteBox">快速輸入</label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('基本節奏')">基本節奏</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('連拍')">連拍</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Break')">Break</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Call')">Call</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label for="note">說明文字 ( 可留白 )</label>
+                <input type="text" class="form-control" id="note" placeholder="說明文字" v-model="tempDrum.note">
+            </div>
+            <div class="d-flex justify-content-center mt-5">
+                <button type="button" class="btn btn-outline-dark mr-3" @click="cancel">取消</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
+            </div>
+        </div>
+
+        <!-- Djembe 編輯 -->
+        <div class="outer editing" :class="{ active: djembeEditing }">
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增 Djembe 小節</h2>
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改 Djembe 小節</h2>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="djembe">小節標題</label>
+                    <input type="text" class="form-control" id="djembe" placeholder="請輸入小節標題" v-model="tempDrum.title" maxlength="20"
+                        style="font-size:24px; font-weight:500; color: #000;">
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="inputEmail4">快速輸入</label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Djembe')">Djembe</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Djembe 1')">Djembe 1</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Djembe 2')">Djembe 2</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-7">
+                    <label for="inputPassword4">Djembe 鼓譜 ( - 號代表空拍)</label>
+                    <input type="text" class="form-control" id="tempBeatDjembe" disabled :Value="tempBeat" maxlength="16" placeholder="請使用按鈕輸入"
+                        style="font-size:24px; letter-spacing: 5px; font-family: monospace; font-variant-numeric: tabular-nums;">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="tempBeatDjembe">請使用按鈕輸入</label>
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','B')">B</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','T')">T</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','S')">S</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('beat','-')">-</button>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputEmail4">刪除按鈕</label>
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat('beat')">←</button>
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat('beat')">清空</button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-5">
+                <button type="button" class="btn btn-outline-dark mr-3" @click="cancel">取消</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
+            </div>
+        </div>
+
+         <!-- Dum-Dum 編輯 -->
+        <div class="outer editing" :class="{ active: dumdumEditing }">
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增 Dum-Dum 小節</h2>
+            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改 Dum-Dum 小節</h2>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="dumdum">小節標題</label>
+                    <input type="text" class="form-control" id="dumdum" placeholder="請輸入小節標題" v-model="tempDrum.title" maxlength="20"
+                        style="font-size:24px; font-weight:500; color: #000;">
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="inputEmail4">快速輸入</label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Sangban')">Sangban</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Dununba')">Dununba</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Kenkeni')">Kenkeni</button>
+                        <button type="button" class="btn btn-outline-dark" @click="quickInsert('Sangban+ Dununba +Kenkeni')">Sangban + Dununba + Kenkeni</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-7">
+                    <label for="inputPassword4">Dum-Dum 鼓譜 ( - 號代表空拍)</label>
+                    <input type="text" class="form-control" id="tempBeat" disabled :Value="tempBaz" maxlength="16" placeholder="請使用按鈕輸入"
+                        style="font-size:24px; letter-spacing: 5px; font-family: monospace; font-variant-numeric: tabular-nums;">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4">請使用按鈕輸入</label>
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('baz','✕')">✕</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('baz','-')">-</button>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputEmail4">刪除按鈕</label>
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat('baz')">←</button>
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat('baz')">清空</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-7">
+                    <input type="text" class="form-control" id="tempBaz" disabled :Value="tempBeat" maxlength="16" placeholder="請使用按鈕輸入"
+                    style="font-size:24px; letter-spacing: 5px; font-family: monospace; font-variant-numeric: tabular-nums;">
+                </div>
+                <div class="form-group col-md-3">
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','⬤')">⬤</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','△')">△</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('beat','-')">-</button>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <div class="d-flex pt-1">
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat('beat')">←</button>
+                        <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat('beat')">清空</button>
+                    </div>
+                </div>
+            </div>  
+            <div class="d-flex justify-content-center mt-5">
+                <button type="button" class="btn btn-outline-dark mr-3" @click="cancel">取消</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
+                <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between outer outer2 hidden-print" :class="{ disappear : isEditing }" style="transition: 0s;">
+            <div>
+                <button type="button" class="btn btn-outline-dark" @click="saving"> 匯入 / 存檔 </button>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-dark ml-5 mr-2" @click="addBeats('djembe')"> + Djembe </button>
+                <button type="button" class="btn btn-outline-dark mr-2" @click="addBeats('dum-dum')"> + Dum-Dum </button>
+                <button type="button" class="btn btn-outline-dark mr-2" @click="addBeats('note')"> + 段落說明 </button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline-info" @click="output" :class="{ disappear : drumList.length == 0 }"> 完成編輯，匯出 </button>
+            </div>
+        </div>
+        <div class="outer outer2 editing hidden-print disappear" :class="{ active : isOutputing }" style="transition: 0s;">
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-dark mr-5" @click="offOutput"> 取消匯出，繼續編輯 </button>
+                <!-- <button type="button" class="btn btn-outline-info ml-5" @click="print"> 匯出圖片 </button> -->
+                <button type="button" class="btn btn-outline-info ml-2" @click="printPdf"> 匯出PDF </button>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+                <small>欲匯出PDF，請點選按鈕後，在列印視窗的「目的地」選擇「另存成PDF」</small>
+            </div>
+        </div>
+        <div class="outer outer2 editing hidden-print" :class="{ active : isSaving }" style="transition: 0s;">
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-info mr-3 ml-5" @click="clickDownload"> 下載編輯資料 </button>
+                <div>
+                    <h5>匯入檔案</h5>
+                    <input type="file" id="fileToLoad" @change="read">  
+                </div>
+                              
+                <!-- <input tabindex="-1" id="fileToLoad" data-input="false" class="font-small" type="file"> -->
+                <!-- <button type="button" class="btn btn-outline-dark mr-5" @click="offOutput">  </button> -->      
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script> 
+<script src="https://unpkg.com/html2canvas@1.0.0-rc.5/dist/html2canvas.js"></script>  -->
+
+    <script src="all.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+.outer {
+    cursor: pointer;
+    padding: 20px;
+    max-width: 1000px;
+    border: 1px solid #FFF;
+    transition: 0.3s;
+    break-inside: avoid;
+}
+.outer:hover {
+    border: 1px solid #ccc;
+}
+.outer2 {
+    border: 1px solid #ccc;
+}
+.noborder {
+    cursor: auto;
+    border: 1px solid #FFF;
+}
+.noborder:hover {
+    border: 1px solid #FFF;
+}
+.padding-space {
+    height: 30px;
+    width: auto;
+    /* background-color: #ccc; */
+}
+.editing {
+    background-color: #eee;
+    max-height: 0;
+    border: 0;
+    overflow: hidden;
+    padding: 0;
+}
+.non-display {
+    display: none;
+}
+.disappear {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: 0s;
+    border: 0;
+}
+.disappear:hover {
+    /* border: 1px solid #FFF; */
+    border: 0;
+}
+.active {
+    max-height: 800px;
+    padding: 20px;
+    transition: 0.5s;
+    opacity: 1;
+}
+#tempBeat {
+    font-size: 60px;
+}
+.title {
+    width: fit-content;
+    padding: 0 15px;
+    border-bottom: 2px solid #aaa;
+    font-family: sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/*  黑色色塊  */
+.note {
+    width: fit-content;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: black;
+    color: white;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 30px ;
+}
+.padding0 {
+    padding: 0;
+}
+
+/*  樂器說明  */
+.instrument {
+    width: 170px;
+    padding: 15px;
+    padding-top: 10px;
+}
+h2 {
+    font-family: sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/*  Djembe  */
+.sound div{
+    width: 28px;
+    font-family: monospace;
+    font-variant-numeric: tabular-nums;   
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: 14px;
+    line-height: 32px;
+    margin: 0 8px 0 10px;
+}
+
+/*  Dum-Dum  */
+.symbol div{
+    width: 28px;
+    font-size: 32px;
+    line-height: 20px;
+    margin: -2px 9px 0 9px;
+}
+
+/*  鏘鏘  */
+.relative {
+    position: relative;
+}
+.baz {
+    position: absolute;
+    z-index: 1;
+}
+.baz div {
+    width: 28px;
+    font-size: 30px;
+    text-align: center;
+    line-height: 20px;
+    margin: -10px 8px 0 10px;
+}
+
+/*  節拍線  */
+.beat {
+    margin: 0;
+    padding: 0;
+    height: 32px;
+    width: 46px;
+    border-style: solid;
+    border-color: #FFF;
+    border-top: 2px solid #777;
+    border-right: 1px solid #777;
+    border-left: 1px solid #777;
+}
+.blank {
+    margin: 0;
+    padding: 0;
+    height: 32px;
+    width: 23px;
+}
+.leftBlank {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #FFF;
+    border-right: 1px solid #777;
+}
+.rightBlank {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #FFF;
+    border-left: 1px solid #777;
+}
+.demo {
+    cursor: pointer;
+    padding: 20px;
+    max-width: 1000px;
+    border: 1px solid #FFF;
+    opacity: 0.4;
+}
+.ps {
+    margin-left: 50px;
+    font-size: 18px;
+    padding: 10px;
+}
+.red-border {
+    border: 1px solid rgba(255, 0, 0, 0.4);
+}
+.red-border:hover {
+    border: 1px solid rgba(255, 0, 0, 0.4);
+}
+
+@media only screen and (max-width: 600px) {
+    .outer {
+        flex-wrap: wrap;
+        width: 100vw;
+    }
+    /* .relative {
+        margin: 20px 0;
+    } */
+}
+@media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+    }
+    .hidden-print {
+        display: none !important;
+    }
+    /* .hidden-print:hover {
+        display: none !important;
+    }
+    .border-print {
+        border: 1px solid #fff !important;
+    }
+    .border-print:hover {
+        border: 1px solid #fff !important;
+    } */
+  }
