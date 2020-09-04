@@ -308,7 +308,7 @@
                 <button type="button" class="btn btn-outline-dark mr-2" @click="addBeats('note')"> + 段落說明 </button>
             </div>
             <div>
-                <button type="button" class="btn btn-outline-info" @click="output" :class="{ disappear : drumList.length == 0 }"> 完成編輯，匯出 </button>
+                <!-- <button type="button" class="btn btn-outline-info" @click="output" :class="{ disappear : drumList.length == 0 }"> 完成編輯，匯出 </button> -->
             </div>
         </div>
         <div class="outer outer2 editing hidden-print disappear" :class="{ active : isOutputing }" style="transition: 0s;">
@@ -321,18 +321,15 @@
                 <small>欲匯出PDF，請點選按鈕後，在列印視窗的「目的地」選擇「另存成PDF」</small>
             </div>
         </div>
-        <div class="outer outer2 editing hidden-print" :class="{ active : isSaving }" style="transition: 0s;">
+        <!-- <div class="outer outer2 editing hidden-print" :class="{ active : isSaving }" style="transition: 0s;">
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-info mr-3 ml-5" @click="clickDownload"> 下載編輯資料 </button>
                 <div>
                     <h5>匯入檔案</h5>
-                    <input type="file" id="fileToLoad" @change="read">  
-                </div>
-                              
-                <!-- <input tabindex="-1" id="fileToLoad" data-input="false" class="font-small" type="file"> -->
-                <!-- <button type="button" class="btn btn-outline-dark mr-5" @click="offOutput">  </button> -->      
+                    <input type="file" id="fileToLoad"  tabindex="-1" data-input="false" @change="read">  
+                </div> 
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
