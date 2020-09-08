@@ -44,7 +44,7 @@ div, .container {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background-color: #555;
+    background-color: #FFAB9D;
     color: #FFF;
     font-size: 48px;
     line-height: 72px;
@@ -60,7 +60,7 @@ div, .container {
 .navBtn:hover {
     transform: translateY(5px);
     transform: scale(1.2, 1.2);
-    background-color: #000;
+    background-color: #fc8671;
     box-shadow: 0 2px #ccc;
 }
 .navBar {
@@ -424,6 +424,14 @@ div, .container {
     }
     .title {
         font-size: 20px;
+    }
+    .navBtn {
+        width: 60px;
+        height: 60px;
+        line-height: 52px;
+        padding-left: 7px;
+        top: 5px;
+        right: 5px;
     }
     .outer {
         flex-wrap: wrap;

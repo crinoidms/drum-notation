@@ -249,33 +249,39 @@
         </div>
 
         <!-- Note 編輯 -->
-        <div class="outer editing disappear" :class="{ active: noteEditing }">
-            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增標註</h2>
-            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改標註</h2>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="noteBox">段落標註</label>
-                    <input type="text" class="form-control" id="noteBox" placeholder="如：基本伴奏" v-model="tempDrum.title" maxlength="15"
-                        style="font-size:24px; font-weight:500; color: #000;">
+        <div class="editing" :class="{ disappear: noteEditClosed }">
+            <div class="editTitle">
+                <div class="closeBtn closeEditBtn" @click="cancel">✕</div>
+                <h3 class="" v-if="isNew">新增標註</h3>
+                <h3 class="" v-else>修改標註</h3>
+            </div>
+            <div class="editInner">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <small>段落標註</small>
+                        <input type="text" class="form-control" placeholder="請輸入段落標註" v-model="tempDrum.title" maxlength="20">
+                    </div>
+                    <div class="form-group col-md-8">
+                        <small>段落標註快速輸入</small>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('基本節奏')">基本節奏</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('連拍')">連拍</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('Break')">Break</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('Call')">Call</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group col-md-9">
-                    <label for="noteBox">快速輸入</label>
-                    <div class="d-flex">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('基本節奏')">基本節奏</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('連拍')">連拍</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Break')">Break</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Call')">Call</button>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <small>說明文字 ( 可留白 )</small>
+                        <input type="text" class="form-control" placeholder="請輸入說明文字" v-model="tempDrum.note" maxlength="50">
                     </div>
                 </div>
             </div>
-            <div class="form-row">
-                <label for="note">說明文字 ( 可留白 )</label>
-                <input type="text" class="form-control" id="note" placeholder="說明文字" v-model="tempDrum.note">
-            </div>
-            <div class="d-flex justify-content-center mt-5">
-                <button type="button" class="btn btn-outline-dark mr-3" @click="cancel">取消</button>
-                <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
-                <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
+            <div class="d-flex justify-content-center pt-3 pb-2">
+                <button type="button" class="btn btn-secondary mr-2" @click="cancel">取消</button>
+                <button type="button" class="btn btn-info" v-if="isNew" @click="submitNew">確定新增</button>
+                <button type="button" class="btn btn-info" v-else @click="submitPatch">確定修改</button>
             </div>
         </div>
 
@@ -407,8 +413,133 @@
             
         </div>
 
+    <!-- DumDum 編輯器 -->
+        <div class="editing" :class="{ disappear: dumdumEditClosed }">
+            <div class="editTitle">
+                <div class="closeBtn closeEditBtn" @click="cancel">✕</div>
+                <h3 class="" v-if="isNew">新增 Dum-Dum 小節</h3>
+                <h3 class="" v-else>修改 Dum-Dum 小節</h3>
+            </div>
+            <div class="editInner">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <small>小節標題</small>
+                        <input type="text" class="form-control" placeholder="請輸入小節標題" v-model="tempDrum.title" maxlength="20">
+                    </div>
+                    <div class="form-group col-md-8">
+                        <small>標題快速輸入</small>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('Sangban')">Sangban</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('Dununba')">Dununba</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="quickInsert('Kenkeni')">Kenkeni</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark" @click="quickInsert('Sangban+ Dununba +Kenkeni')">All Same</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div><small>Dum-Dum 鼓譜 (請使用按鈕編輯)</small></div>
+                <div class="editNotation">
+                    <div class="d-flex">
+                        <div class="custom-control custom-checkbox m-3">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1" v-model="addPre" @change="checkPre">
+                            <label class="custom-control-label" for="customCheck1">加上前半拍</label>
+                        </div>
+                        <div class="custom-control custom-checkbox m-3">
+                            <input type="checkbox" class="custom-control-input" id="customCheck2" v-model="addRepeat" @change="checkRepeat">
+                            <label class="custom-control-label" for="customCheck2">本節需重複</label>
+                        </div>
+                    </div>
+                    <!-- 標示 -->
+                    <div class="relative editPreview">
+                        <div class="d-flex beatLines">
+                            <div class="d-flex onePre">
+                                <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
+                                <div class="helfPre preBeatRight opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
+                            </div>
+                            <div class="d-flex oneBeat">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <div class="d-flex oneBeat">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <div class="d-flex oneBeat">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <div class="d-flex oneBeat">
+                                <div class="blank leftBlank"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="beat"></div>
+                                <div class="blank rightBlank"></div>
+                            </div>
+                            <!-- Repeat -->
+                            <div class="repeatMark relative" v-if="tempDrum.repeat">
+                                <div class="repeatLine">
+                                    <div class="repeatNumber">×{{tempDrum.repeat}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Sound -->
+                        <div class="sound d-flex">
+                            <div class="onePre soundText" v-if="tempDrum.preBeat"><div>{{ tempDrum.preBeat==='-' ? '&ensp;' : tempDrum.preBeat }}</div></div>
+                            <div class="onePre soundText" v-else><div>&ensp;</div></div>
+                            <div class="soundText" v-for="i in tempDrum.beat" :class="{ doubleSound : i==='❲SS❳' }">
+                                <!-- <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div> -->
+                                <div :class="{ rollSound : i==='TT' }">{{i}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center flex-wrap">
+                        <div class="mr-3" style="width: 250px;">
+                            <small>編輯按鈕 ( - 號代表空拍)</small>
+                            <div class="pt-1">
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-dark mr-2" @click="insertBaz('✕')">✕</button>
+                                    <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBaz('-')">-</button>
+                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBaz()">🡸</button>
+                                </div>
+                                <div class="d-flex pt-2">
+                                    <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('⬤')">⬤</button>
+                                    <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('△')">△</button>
+                                    <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('✩')">✩</button>
+                                    <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('-')">-</button>
+                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">🡸</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mr-3" style="width: 250px;">
+                            <small>全部清空</small><small v-if="tempDrum.repeat"> / 重複次數增減</small>
+                            <div class="d-flex pt-1">
+                                <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat()">清空</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mr-2" v-if="tempDrum.repeat" @click="changeRepeatTimes('+')">✚</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mr-2" v-if="tempDrum.repeat" @click="changeRepeatTimes('-')">⚊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center pt-3 pb-2">
+                    <button type="button" class="btn btn-secondary mr-2" @click="cancel">取消</button>
+                    <button type="button" class="btn btn-info" v-if="isNew" @click="submitNew">確定新增</button>
+                    <button type="button" class="btn btn-info" v-else @click="submitPatch">確定修改</button>
+                </div>
+            </div>     
+        </div>
+
          <!-- Dum-Dum 編輯 -->
-        <div class="outer editing disappear" :class="{ active: dumdumEditing }">
+        <!-- <div class="outer editing disappear" :class="{ active: dumdumEditing }">
             <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增 Dum-Dum 小節</h2>
             <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改 Dum-Dum 小節</h2>
             <div class="form-row">
@@ -436,8 +567,8 @@
                 <div class="form-group col-md-3">
                     <label for="inputEmail4">請使用按鈕輸入</label>
                     <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('baz','✕')">✕</button>
-                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('baz','-')">-</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('✕')">✕</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('-')">-</button>
                     </div>
                 </div>
                 <div class="form-group col-md-2">
@@ -455,9 +586,10 @@
                 </div>
                 <div class="form-group col-md-3">
                     <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','⬤')">⬤</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('beat','△')">△</button>
-                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('beat','-')">-</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('⬤')">⬤</button>
+                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('△')">△</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('✩')">✩</button>
+                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('-')">-</button>
                     </div>
                 </div>
                 <div class="form-group col-md-2">
@@ -472,7 +604,9 @@
                 <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
                 <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
             </div>
-        </div>
+        </div> -->
+        
+        
         <!-- <div class="d-flex justify-content-between outer borderCCC hidden-print" :class="{ disappear : isEditing }" style="transition: 0s;">
             <div>
                 <button type="button" class="btn btn-outline-dark" @click="saving"> 匯入 / 存檔 </button>

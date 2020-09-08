@@ -7,9 +7,10 @@ var app = new Vue({
         noData: true, 
         titleEditing: false,
         titleShowing: true,
-        djembeEditClosed: false,
-        dumdumEditing: false,
-        noteEditing: false,
+        djembeEditClosed: true,
+        dumdumEditClosed: true,
+        // noteEditing: false,
+        noteEditClosed: true,
         isNavClose: true,
         isEditing: false,
         isSaving: false,
@@ -30,7 +31,7 @@ var app = new Vue({
         demoDrum: [
             {
                 'type': "note",
-                'note': "請點選下方按鈕，開始編輯樂譜。",
+                'note': "請點選右上方按鈕，開始編輯樂譜。",
                 'title': "畫面示意",
             },
             {
@@ -164,8 +165,8 @@ var app = new Vue({
         offEditing() {
             this.titleEditing = false;
             this.djembeEditClosed = true;
-            this.dumdumEditing = false;
-            this.noteEditing = false;
+            this.dumdumEditClosed = true;
+            this.noteEditClosed = true;
             this.isEditing = false;
             this.isNew = false;
             this.titleShowing = true;
@@ -204,7 +205,7 @@ var app = new Vue({
             this.closeOperator();
             this.isNew = true;
             if( drum ==="note" ) {      
-                this.noteEditing = true;
+                this.noteEditClosed = false;
                 this.scrollToBottom ();
             } else if ( drum === "djembe" ) {
                 // this.showBeat();
@@ -212,7 +213,7 @@ var app = new Vue({
                 this.scrollToBottom ();
             } else if ( drum === 'dum-dum') {
                 // this.showBeat();
-                this.dumdumEditing = true;
+                this.dumdumEditClosed = false;
                 this.scrollToBottom ();
             }
         },
@@ -226,7 +227,7 @@ var app = new Vue({
                 this.tempDrum = JSON.parse(JSON.stringify(this.drumList[drum]));
                 var type = this.tempDrum.type;
                 if( this.tempDrum.type ==="note" ) {
-                    this.noteEditing = true;
+                    this.noteEditClosed = false;
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === "djembe" ) {
                     // this.showBeat();
@@ -234,7 +235,7 @@ var app = new Vue({
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === 'dum-dum') {
                     // this.showBeat();
-                    this.dumdumEditing = true;
+                    this.dumdumEditClosed = false;
                     this.scrollToBottom ();
                 }   
             }
@@ -291,6 +292,7 @@ var app = new Vue({
         },
         clearBeat() {
             this.tempDrum.beat = [];
+            this.tempDrum.baz = [];
             if ( this.addPre ) {
                 this.tempDrum.preBeat = '-';
             };
