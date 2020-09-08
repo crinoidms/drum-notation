@@ -4,6 +4,7 @@
   }
 body {
     overscroll-behavior-y: contain;
+    touch-action: manipulation;
 }
 div, .container {
     padding: 0;
