@@ -153,6 +153,8 @@ div, .container {
     bottom: 0;
     width: 100vw;
     max-width: 1000px;
+    max-height: 100vh;
+    overflow: scroll;
     border: 3px solid #FFAB9D;
     box-sizing: border-box;
     box-shadow: 0 0 5px #ccc;
