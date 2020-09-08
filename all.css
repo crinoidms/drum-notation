@@ -1,7 +1,101 @@
+@font-face {
+    font-family: Narrow;
+    src: url(./PTSansNarrow-Regular.ttf);
+  }
+body {
+    overscroll-behavior-y: contain;
+}
 div, .container {
     padding: 0;
 }
-
+.repeatMark {
+    height: 150%;
+}
+.repeatLine {
+    position: absolute;
+    height: 100%;
+    width: 10px;
+    border: 1px solid darkred;
+    border-left: 0;
+    top: 10%;
+    /* top: 50%; */
+    left: 10px;
+    z-index: 1;
+}
+.repeatNumber {
+    position: absolute;
+    top: 10%;
+    left: 15px;
+    color: darkred;
+    font-size: 20px;
+    font-weight: 600;
+}
+.nav {
+    width: 100vw;
+    max-width: 1000px;
+    position: fixed;
+    background-color: #fff;
+    top: 1px;
+    margin: 0;
+    opacity: 1;
+    z-index: 2;
+}
+.navBtn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #555;
+    color: #FFF;
+    font-size: 48px;
+    line-height: 72px;
+    padding-left: 17px;
+    cursor: pointer;
+    box-shadow: -3px 5px 5px #ccc;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+    transition: 0.5s;
+}
+.navBtn:hover {
+    transform: translateY(5px);
+    transform: scale(1.2, 1.2);
+    background-color: #000;
+    box-shadow: 0 2px #ccc;
+}
+.navBar {
+    height: auto;
+    padding: 50px;
+    background-color: #FFF;
+    border: 3px solid #FFAB9D;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    box-sizing: border-box;
+    box-shadow: -3px 5px 5px #ccc;
+    transition: 0.5s;
+    opacity: 1;
+}
+.closeBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #FFAB9D;
+    color: #FFAB9D;
+    font-size: 20px;
+    line-height: 25px;
+    padding-left: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.closeBtn:hover {
+    transform: scale(1.2, 1.2);
+    background-color: #000;
+}
 #page {
     max-width: 1000px;
 }
@@ -9,11 +103,13 @@ div, .container {
     cursor: pointer;
     width: 100vw;
     max-width: 1000px;
-    padding: 6% 0 5% 7%;
-    border: 1px solid #FFF;
+    /* padding: 5% 5px 4% 10px; */
+    padding: 3% 5px 3% 10px;
+    border: 1px solid rgba(255, 255, 255, 0);
     box-sizing: border-box;
     transition: 0.3s;
     break-inside: avoid;
+    /* margin-bottom: 5px; */
 }
 .demo {
     opacity: 0.4;
@@ -26,21 +122,17 @@ div, .container {
 }
 .noborder {
     cursor: auto;
-    border: 1px solid #FFF;
+    border: 1px solid rgba(255, 255, 255, 0);
 }
 .noborder:hover {
-    border: 1px solid #FFF;
+    border: 1px solid rgba(255, 255, 255, 0);
 }
 .padding-space {
     height: 30px;
     width: auto;
 }
-.editing {
-    background-color: #eee;
-    /* border: 0; */
-    /* padding: 0; */
-}
--display {
+
+.display {
     display: none;
 }
 .disappear {
@@ -49,16 +141,64 @@ div, .container {
     opacity: 0;
     overflow: hidden;
     transition: 0s;
-    border: 0;
+    /* border-color: rgba(255, 255, 255, 0); */
+    box-sizing: border-box;
 }
-.disappear:hover {
-    /* border: 1px solid #FFF; */
+/* .disappear:hover {
     border: 0;
+} */
+.editing {
+    position: fixed;
+    background-color: #FFF;
+    bottom: 0;
+    width: 100vw;
+    max-width: 1000px;
+    border: 3px solid #FFAB9D;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px #ccc;
+    z-index: 10;
+    transition: 0.5s;
 }
+.editTitle {
+    position: relative;
+    width: 100%;
+    background-color: #FFAB9D;
+    padding: 10px 0 5px 3%;
+}
+.closeEditBtn {
+    border: 1px solid #FFF;
+    color: #FFF;
+}
+.editTitle h3 {
+    color: #FFF;
+    font-size: 22px;
+    font-weight: 600;
+}
+.editInner {
+    padding: 2% 6%;
+}
+.editInner small {
+    color: #555;
+}
+.editPreview {
+    padding: 15px 0;
+    opacity: 0.6;
+}
+.editNotation {
+    background-color: #EEE;
+    padding: 5px;
+}
+
 .active {
-    max-height: 800px;
+    max-height: 1200px;
     padding: 20px;
     transition: 0.5s;
+    opacity: 1;
+}
+.opacity0 {
+    opacity: 0;
+}
+.opacity1 {
     opacity: 1;
 }
 #tempBeat {
@@ -68,9 +208,9 @@ div, .container {
     width: fit-content;
     padding: 0 15px;
     border-bottom: 2px solid #aaa;
-    font-family: sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     /* font-size: 28px; */
-    font-size: 1.5rem;
+    font-size: 32px;
     font-weight: 600;
 }
 
@@ -100,48 +240,71 @@ div, .container {
     font-size: 18px;
     /* padding: 10px; */
 }
+.demoWarning {
+    width: 100%;
+    font-size: 16px;
+    text-align: end; 
+    opacity: 0.4; 
+    margin-right: 10vw;
+}
 
 /*  節奏記譜  ------------------------------------- 節奏記譜  */
 /*  樂器說明  */
 .instrument {
-    /* width: 170px; */
-    width: 19.6%;
-    max-width: 130px;
-    /* background-color: #ccc; */
+    /* width: 18%; */
+    width: 15%;
+    max-width: 150px;
+    /* padding-right: 15px; */
 }
 .instrument h2 {
-    font-family: sans-serif;
-    font-size: 22px;
+    /* font-family: Narrow; */
+    font-size: 24px;
     font-weight: 600;
     line-height: 28px;
     margin: 0;
+    padding: 0;
 }
 
 /*  Djembe  */
 .sound {
-    width: 72.2vw;
+    width: 75vw;
     max-width: 722px;
     height: 5vw;
     max-height: 27px;
 }
 .sound div{
-    width: 5.56%;
+    width: 5.7%;
+    /* width: 8%; */
     height: 100%;
+}
+.soundText {
+    margin-top: -5px;
+    position: relative;
+}
+.soundText div{
+    width: 100%;
+    position: absolute;
     font-family: monospace;
-    font-variant-numeric: tabular-nums;   
     font-size: 32px;
     font-weight: 400;
     text-align: center;
-    margin-top: -5px;
+}
+.doubleSound div{
+    font-family: Narrow;
+    letter-spacing: -1px;
+}
+.rollSound {
+    margin-left: 25%;
+    letter-spacing: 2px;
 }
 
 /*  Dum-Dum  */
-.symbol {
+/* .symbol {
     width: 72.2vw;
     max-width: 722px;
     height: 5vw;
     max-height: 27px;
-}
+} */
 .symbol div{
     /* width: 28px;
     font-size: 32px;
@@ -164,9 +327,6 @@ div, .container {
 .baz {
     position: absolute;
     z-index: 1;
-    width: 72.2vw;
-    max-width: 722px;
-    height: 5vw;
     max-height: 27px;
     margin-top: -16px;
     /* margin-top: -2.5vw; */
@@ -190,20 +350,21 @@ div, .container {
     /* height: 4.5vw; */
     /* max-height: 27px; */
     height: 27px;
-    width: 72.2vw;
+    width: 75vw;
     max-width: 722px;
 }
 .onePre {
     /* margin-left: 5.48%; */
-    margin-left: 15px;
-    width: 5.56%;
+    /* margin-left: 5px; */
+    width: 5.7%;
     height: 100%;
+    margin-left: 3.1%;
 }
 .helfPre {
     width: 50%;
     border-style: solid;
     border-width: 2px;
-    border-color: #FFF;
+    border-color: rgba(255, 255, 255, 0);
     box-sizing: border-box;
 }
 .preBeatLeft {
@@ -217,7 +378,7 @@ div, .container {
 
 /*  一拍  */
 .oneBeat {
-    width: 22.24%;
+    width: 22.8%;
     height: 100%;
 }
 .blank {
@@ -226,7 +387,7 @@ div, .container {
     width: 12.5%;
     border-style: solid;
     border-width: 2px;
-    border-color: #FFF;
+    border-color: rgba(255, 255, 255, 0);
     box-sizing: border-box;
 }
 .leftBlank {
@@ -240,12 +401,13 @@ div, .container {
 .beat {
     width: 25%;
     border-style: solid;
-    border-color: #FFF;
+    border-color: rgba(255, 255, 255, 0);
     border-top: 2px solid #777;
     border-right: 1px solid #777;
     border-left: 1px solid #777;
     box-sizing: border-box;
 }
+
 
 
 
@@ -260,9 +422,12 @@ div, .container {
     .container {
         margin: 0;
     }
+    .title {
+        font-size: 20px;
+    }
     .outer {
         flex-wrap: wrap;
-        padding: 6% 2% 5% 5%;
+        padding: 3% 5px 3% 10px;
     }
     #page {
         max-width: 200vw;
@@ -278,15 +443,37 @@ div, .container {
     .ps {
         font-size: 12px;
     }
-    .instrument h2 {
+    .demoWarning {
+        padding-right: 15px;
         font-size: 12px;
+    }
+    .instrument {
+        max-width: 100px;
+        font-family: Narrow;
+        /* padding-right: 5px; */
+    }
+    .instrument h2 {
+        font-size: 13px;
         font-weight: 600;
         line-height: 14px;
     }
-    .sound div, .baz div, .symbol div{
+    .soundText {
+        margin-top: 0;
+    }
+    .soundText div{
         font-size: 16px;
-        margin-top: -5px;
-        font-weight: 600;
+        margin-top: -4px;
+        font-weight: 400;
+    }
+    .doubleSound div{
+        font-size: 16px;
+        font-family: Narrow;
+        letter-spacing: 0;
+        margin-left: -2px;
+    }
+    .rollSound {
+        margin-left: 10%;
+        letter-spacing: 0;
     }
     .symbol div{
         font-size: 14px;
@@ -298,15 +485,41 @@ div, .container {
     .baz div {
         font-size: 14px;
     }
-    
     .onePre {
-        margin-left: 5.48%;
+        margin-left: 5px;
     }
     .beatLines {
-        height: 4.5vw;
+        height: 14px;
     }
+    .disappear {
+        max-height: 0;
+        padding: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: 0s;
+        border: 0;
+    }
+    .active {
+        max-height: 1200px;
+        padding: 20px;
+        transition: 0.5s;
+        opacity: 1;
+    }
+    .repeatLine {
+        width: 6px;
+        left: 0;
+    }
+    .repeatNumber {
+        font-size: 14px;
+        left: 8px;
+        font-weight: 400;
+        font-family: 'Arial Narrow';
+        letter-spacing: 0;
+        top: 0;
+    }
+   
 }
-@media screen and (min-width:601px) and (max-width: 900px) {
+@media screen and (min-width:601px) and (max-width: 990px) {
     .container {
         margin: 0;
     }
@@ -317,7 +530,7 @@ div, .container {
         font-size: 16px;
     }
     .outer {
-        padding: 6% 2% 5% 5%;
+        padding: 6% 5px 5% 10px;
     }
     .symbol div{
         font-size: 28px;
@@ -328,6 +541,20 @@ div, .container {
     }
     .baz div {
         font-size: 28px;
+    }
+    .disappear {
+        max-height: 0;
+        padding: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: 0s;
+        border: 0;
+    }
+    .active {
+        max-height: 1200px;
+        padding: 20px;
+        transition: 0.5s;
+        opacity: 1;
     }
 
 }

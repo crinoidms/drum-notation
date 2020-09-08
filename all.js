@@ -2,13 +2,15 @@ var app = new Vue({
     el: '#app',
     data: {
         title: "Djembe 鼓譜",
+        isFourBeats: true,
         tempTitle: "",
         noData: true, 
         titleEditing: false,
         titleShowing: true,
-        djembeEditing: false,
+        djembeEditClosed: false,
         dumdumEditing: false,
         noteEditing: false,
+        isNavClose: true,
         isEditing: false,
         isSaving: false,
         isOperatorOpened:false,
@@ -16,6 +18,9 @@ var app = new Vue({
         isOutputing: false,
         selectedOrder: "",
         justDeletedOrder: false,
+        addPre: false,
+        addRepeat: false,
+        fullBeats: 16,
         tempBeat: "",
         tempBaz: "",
         tempDrum: {
@@ -31,12 +36,61 @@ var app = new Vue({
             {
                 'type': "djembe",
                 'title': "Djembe 1",
-                'beat': ['T','-','S','S','-','-','S','T','T','-','S','S','B','-','S','T'],
+                'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S'],
+                // 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
+                'preBeat': 'T',
+                'repeat': 3,
             },
         ],
-        drumList: [],
+        drumList: [
+            // {
+            //     'type': "djembe",
+            //     'title': "Djembe 1",
+            //     'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
+            //     'preBeat': 'T',
+            //     'repeat': 3,
+            // },
+        ],
     },
     methods: {
+        // changeFullBeats() {
+        //     this.isFourBeats = !this.isFourBeats;
+        //     if ( this.isFourBeats ) {
+        //         this.fullBeats = 16;
+        //     } else {
+        //         this.fullBeats = 12;
+        //     }
+        //     this.closeNav();
+        // },
+         makeVueBuzy() {
+            this.tempDrum.beat.push(0);
+            this.showBeat();
+            this.tempDrum.beat.pop();
+            this.showBeat();
+        },
+        checkRepeat(){
+            if ( this.addRepeat ) {
+                this.tempDrum.repeat = 2;
+            } else {
+                delete this.tempDrum.repeat;
+            }
+        },
+        checkPre(){
+            if ( this.addPre ) {
+                this.tempDrum.preBeat = '-';
+            } else {
+                delete this.tempDrum.preBeat;
+            }
+        },
+        openNav(){
+            this.isNavClose = false;
+            this.isEditing = true;
+            this.closeOperator(); 
+        },
+        closeNav(){
+            this.isNavClose = true;
+            this.isEditing = false;
+        },
         fake_click(obj) {
             var ev = document.createEvent("MouseEvents");
             ev.initMouseEvent(
@@ -109,22 +163,27 @@ var app = new Vue({
         },
         offEditing() {
             this.titleEditing = false;
-            this.djembeEditing = false;
+            this.djembeEditClosed = true;
             this.dumdumEditing = false;
             this.noteEditing = false;
             this.isEditing = false;
             this.isNew = false;
             this.titleShowing = true;
+            this.isNavClose = true;
         },
         resetTempDrum() {
             this.tempDrum = {} ;
             this.tempDrum.beat = [];
             this.tempDrum.baz = [];
+            this.addPre = false;
+            delete this.tempDrum.preBeat;
+            this.addRepeat = false;
+            delete this.tempDrum.addRepeat;
             //  以下是為了讓畫面render而瞎忙
-            this.tempDrum.beat.push(0);
-            this.showBeat();
-            this.tempDrum.beat.pop();
-            this.showBeat();
+            // this.tempDrum.beat.push(0);
+            // this.showBeat();
+            // this.tempDrum.beat.pop();
+            // this.showBeat();
         },
     // ------觸發新增與修改------------------------- 
         editTitle() {
@@ -133,6 +192,7 @@ var app = new Vue({
                 this.titleEditing = true;
                 this.titleShowing = false;
                 this.isEditing = true;
+                this.isNavClose = true;
                 this.closeOperator();
             }
         },
@@ -140,6 +200,7 @@ var app = new Vue({
             var length = this.drumList.length;
             this.tempDrum.type = drum;  
             this.isEditing = true;
+            this.isNavClose = true;
             this.closeOperator();
             this.isNew = true;
             if( drum ==="note" ) {      
@@ -147,7 +208,7 @@ var app = new Vue({
                 this.scrollToBottom ();
             } else if ( drum === "djembe" ) {
                 // this.showBeat();
-                this.djembeEditing = true;
+                this.djembeEditClosed = false;
                 this.scrollToBottom ();
             } else if ( drum === 'dum-dum') {
                 // this.showBeat();
@@ -159,6 +220,7 @@ var app = new Vue({
             if ( !this.isEditing) {
                 var length = this.drumList.length;
                 this.isEditing = true;
+                this.isNavClose = true;
                 this.closeOperator();
                 this.showSelectedOuter();
                 this.tempDrum = JSON.parse(JSON.stringify(this.drumList[drum]));
@@ -167,11 +229,11 @@ var app = new Vue({
                     this.noteEditing = true;
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === "djembe" ) {
-                    this.showBeat();
-                    this.djembeEditing = true;
+                    // this.showBeat();
+                    this.djembeEditClosed = false;
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === 'dum-dum') {
-                    this.showBeat();
+                    // this.showBeat();
                     this.dumdumEditing = true;
                     this.scrollToBottom ();
                 }   
@@ -187,37 +249,65 @@ var app = new Vue({
             this.tempDrum.beat.pop();
             this.showBeat();
         },
-        insertBeat(type, s) {
-            if (type === 'beat') {
-                var length = this.tempDrum.beat.length;
-                if( length < 16  ) {
+        changeRepeatTimes(x) {
+            if ( x === '+') {
+                this.tempDrum.repeat < 9 ? this.tempDrum.repeat += 1 : this.tempDrum.repeat = this.tempDrum.repeat
+                this.makeVueBuzy();
+            } else {
+                this.tempDrum.repeat > 2 ? this.tempDrum.repeat -= 1 : this.tempDrum.repeat = this.tempDrum.repeat
+                this.makeVueBuzy();
+            }
+        },
+        insertBeat(s) {
+            var length = this.tempDrum.beat.length;  
+            if ( this.addPre ) {
+                if ( this.tempDrum.preBeat === '-' ) {
+                    var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
+                    newTemp.preBeat = s ;
+                    this.tempDrum = newTemp ; 
+                } else {
+                    if ( length < this.fullBeats ) {
+                        this.tempDrum.beat.push(s);
+                    }
+                }   
+            } else {
+                if ( length < 1) {
+                    var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
+                    newTemp.beat.push(s);
+                    this.tempDrum = newTemp ; 
+                } else if ( length < this.fullBeats ) {
                     this.tempDrum.beat.push(s);
-                    // s ==='-' ? this.tempDrum.beat.push(0) : this.tempDrum.beat.push(s)
                 }
-            } else {
-                var length = this.tempDrum.baz.length;
-                if( length < 16 ) {
-                    this.tempDrum.baz.push(s);
-                    // s ==='-' ? this.tempDrum.baz.push(0) : this.tempDrum.baz.push(s)
-                }
+            }
+        },
+        insertBaz(s) { 
+            
+            var length = this.tempDrum.baz.length;
+            if( length < this.fullBeats ) {
+                this.tempDrum.baz.push(s);
+                // s ==='-' ? this.tempDrum.baz.push(0) : this.tempDrum.baz.push(s)
             }
             this.showBeat();
         },
-        clearBeat(type) {
-            if ( type === 'beat') {
-                this.tempDrum.beat = [];
-            } else {
-                this.tempDrum.baz = [];
-            }
-            this.showBeat();
+        clearBeat() {
+            this.tempDrum.beat = [];
+            if ( this.addPre ) {
+                this.tempDrum.preBeat = '-';
+            };
         },
-        backWardBeat(type) {
-            if ( type === 'beat') {
-                this.tempDrum.beat.pop();
-            } else {
-                this.tempDrum.baz.pop();
+        clearBaz() {
+            this.tempDrum.baz = [];
+        },
+        backWardBeat() {
+            var length = this.tempDrum.beat.length;
+            console.log(length);
+            if ( this.addPre && length <1 ) {
+                this.tempDrum.preBeat = '-';
             }
-            this.showBeat();
+            this.tempDrum.beat.pop();
+        },
+        backWardBaz() {
+            this.tempDrum.baz.pop();
         },
 
     // ------submit 與 cancel-------------------------      
