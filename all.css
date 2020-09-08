@@ -543,6 +543,21 @@ div, .container {
     .outer {
         padding: 6% 5px 5% 10px;
     }
+    .soundText div{
+        font-size: 28px;
+        margin-top: -4px;
+        /* font-weight: 400; */
+    }
+    .doubleSound div{
+        font-size: 28px;
+        font-family: Narrow;
+        letter-spacing: 0;
+        margin-left: -3px;
+    }
+    .rollSound {
+        margin-left: 10%;
+        letter-spacing: -1px;
+    }
     .symbol div{
         font-size: 28px;
         margin-top: -10px;

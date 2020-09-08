@@ -393,7 +393,7 @@
                         <div class="mr-3" style="width: 200px;">
                             <small>刪除按鈕</small><small v-if="tempDrum.repeat"> / 重複次數增減</small>
                             <div class="d-flex pt-1">
-                                <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">🡸</button>
+                                <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">←</button>
                                 <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat()">清空</button>
                             </div>
                             <div class="d-flex pt-2" v-if="tempDrum.repeat">
@@ -509,14 +509,14 @@
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-outline-dark mr-2" @click="insertBaz('✕')">✕</button>
                                     <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBaz('-')">-</button>
-                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBaz()">🡸</button>
+                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBaz()">←</button>
                                 </div>
                                 <div class="d-flex pt-2">
                                     <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('⬤')">⬤</button>
                                     <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('△')">△</button>
                                     <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('✩')">✩</button>
                                     <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('-')">-</button>
-                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">🡸</button>
+                                    <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">←</button>
                                 </div>
                             </div>
                         </div>
