@@ -4,7 +4,7 @@
   }
 body {
     overscroll-behavior-y: contain;
-    /* touch-action: manipulation; */
+    touch-action: manipulation;
 }
 div, .container {
     padding: 0;
@@ -163,18 +163,7 @@ div, .container {
     width: auto;
 }
 
-.display {
-    display: none;
-}
-.disappear {
-    max-height: 0;
-    padding: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: 0s;
-    /* border-color: rgba(255, 255, 255, 0); */
-    box-sizing: border-box;
-}
+
 .editing {
     position: fixed;
     background-color: #FFF;
@@ -447,6 +436,18 @@ div, .container {
 .red-border:hover {
     border: 1px solid rgba(255, 0, 0, 0.4);
 }
+.display {
+    display: none;
+}
+.disappear {
+    max-height: 0;
+    padding: 0;
+    /* opacity: 0; */
+    overflow: hidden;
+    transition: 0s;
+    /* border-color: rgba(255, 255, 255, 0); */
+    box-sizing: border-box;
+}
 
 @media only screen and (max-width: 600px) {
     .container {
@@ -563,7 +564,14 @@ div, .container {
         max-height: 85vh;
         overflow: scroll;
     }
-   
+    .disappear {
+        max-height: 0;
+        padding: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: 0s;
+        border: 0;
+    }
 }
 @media screen and (min-width:601px) and (max-width: 990px) {
     .container {
@@ -603,6 +611,11 @@ div, .container {
     .baz div {
         font-size: 28px;
     }
+
+    .editing {
+        max-height: 85vh;
+        overflow: scroll;
+    }
     .disappear {
         max-height: 0;
         padding: 0;
@@ -611,17 +624,6 @@ div, .container {
         transition: 0s;
         border: 0;
     }
-    .active {
-        max-height: 1200px;
-        padding: 20px;
-        transition: 0.5s;
-        opacity: 1;
-    }
-    .editing {
-        max-height: 85vh;
-        overflow: scroll;
-    }
-
 }
 @media print {
     * {
