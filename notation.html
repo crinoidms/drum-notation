@@ -19,13 +19,13 @@
     <!---- nav ---------->
             <div class="row nav">
                 <div class="navBtn" :class="{ disappear : isEditing }" @click="openNav"></div>
-                <div class="col-10 col-sm-5 col-md-4 col-lg-3 navBar" :class="{ disappear : isNavClose }">
+                <div class="col-10 col-sm-6 col-md-5 col-lg-4 navBar" :class="{ disappear : isNavClose }">
                     <!-- <div class="col-10 col-sm-5 col-md-4 col-lg-3 navBar"> -->
                     <div class="closeBtn" @click="closeNav"></div>
-                    <button type="button" class="btn btn-outline-dark btn-block" @click="addBeats('djembe')"> + Djembe </button>
-                    <button type="button" class="btn btn-outline-dark btn-block mt-3" @click="addBeats('dum-dum')"> + Dum-Dum </button>
-                    <button type="button" class="btn btn-outline-dark btn-block mt-3" @click="addBeats('note')"> + 段落說明 </button>
-                    <button type="button" class="btn btn-outline-info btn-block mt-5" @click="output" :class="{ disappear : drumList.length == 0 }"> 完成編輯，匯出 </button>
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-block" @click="addBeats('djembe')"> + Djembe </button>
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-3" @click="addBeats('dum-dum')"> + Dum-Dum </button>
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-3" @click="addBeats('note')"> + 段落說明 </button>
+                    <button type="button" class="btn btn-lg btn-outline-info btn-block mt-5" @click="output" :class="{ disappear : drumList.length == 0 }"> 完成編輯，匯出 </button>
                 </div>              
             </div>
         <div id="page">
@@ -33,32 +33,44 @@
             <div class="outer borderHoverChange d-flex justify-content-center disappear" style="transition: 0s;" @click="editTitle" :class="{ active : titleShowing}">
                 <div class="title">{{title}}</div>
             </div>
-            <div class="outer borderHoverChange d-flex justify-content-center red-border disappear" style="transition: 0s;" :class="{ active : titleEditing}">
-                <div class="d-flex">
-                    <input type="text" value="基本伴奏" v-model="tempTitle" maxlength="30" placeholder="請輸入標題"
-                        style="font-size: 20px; padding: 5px 20px;"></input>
-                    <button type="button" class="btn btn-outline-dark ml-3" @click="cancelTitleChange">取消</button>
-                    <button type="button" class="btn btn-outline-info ml-2" @click="submitNewTitle">確定修改</button>
+            <div class="outer borderHoverChange pt-3 red-border disappear" style="transition: 0s;" :class="{ active : titleEditing}">
+                <div class="form-row d-flex justify-content-center" style="width: 100%;">
+                    <div class="form-group col-lg-4 col-md-6">
+                        <input type="text" class="form-control" placeholder="請輸入標題" v-model="tempTitle" maxlength="30">
+                    </div>
+                    <div class="form-group col-lg-2 col-md-4">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-sm btn-outline-dark ml-3" @click="cancelTitleChange">取消</button>
+                            <button type="button" class="btn btn-sm btn-outline-info ml-2" @click="submitNewTitle">確定修改</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         <!-- 主要鼓譜 -->
-            <div class="d-flex outer borderHoverChange" v-for="(item, index) in drumList" @click="clickBeat(index)" :class="{ noborder : isOutputing }">
-                <!-- <div class="d-flex"> -->
-            <!--- Note ----->
-                <div class="d-flex" v-if="item.type === 'note'" style="width: 100%;">
-                    <div class="noteWrap">
-                        <div class="note" :class="{ disappear :  !item.title }">{{item.title}}</div>
+            <div class="outer borderHoverChange" v-for="(item, index) in drumList" @click="clickBeat(index)" :class="{ noborder : isOutputing }">
+                <div class="d-flex">
+                    <!--- Note ----->
+                    <div class="d-flex" v-if="item.type === 'note'" style="width: 100%;">
+                        <div class="noteWrap mr-2">
+                            <div class="note" :class="{ disappear :  !item.title }">{{item.title}}</div>
+                        </div>
+                        <div class="flex-grow-1 pl-2 pr-2">
+                            <P class="ps">{{item.note}}</P>
+                        </div>
                     </div>
-                    <div class="psWrap flex-grow-1">
-                        <div class="ps">{{item.note}}</div>
+                     <!--- Djembe / Dumdum ----->
+                    <!--- 小節標題 ----->
+                    <div class="instrument d-flex align-items-center" v-else="item.type !== 'note'">
+                        <h2>{{item.title}}</h2> 
                     </div>
-                </div>
-            <!--- 小節標題 ----->
-                <div class="instrument d-flex align-items-center" v-else="item.type !== 'note'">
-                    <h2>{{item.title}}</h2> 
-                </div>
-                <!--- Djembe ----->
-                    <div class="relative" v-if="item.type === 'djembe'">
+                    <div class="relative" v-if="item.type === 'djembe' || item.type === 'dum-dum'">
+                        <div class="sound baz d-flex" v-if="item.type === 'dum-dum'">
+                            <div class="onePre soundText" v-if="item.preBaz"><div>{{ item.preBaz }}</div></div>
+                            <div class="onePre soundText" v-else><div>&ensp;</div></div>
+                            <div class="soundText" v-for="i in item.baz">
+                                <div>{{ i==='-' ? '&ensp;' : i }}</div>
+                            </div> 
+                        </div>
                         <div class="d-flex beatLines">
                             <div class="d-flex onePre">
                                 <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : item.preBeat}"></div>
@@ -93,80 +105,31 @@
                                 <div class="blank rightBlank"></div>
                             </div>
                         <!-- Repeat -->
-                            <div class="repeatMark relative" v-if="item.repeat">
+                            <div class="repeatMark relative" v-if="item.repeat" :class="{ repeatTogether : item.repeatWithNext }">
                                 <div class="repeatLine">
                                     <div class="repeatNumber">×{{item.repeat}}</div>
                                 </div>
                             </div>
                         </div> <!-- beatLines End -->
                     <!-- SoundText -->
-                        <div class="sound d-flex">
+                        <div class="sound d-flex" v-if="item.type === 'djembe'">
                             <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in item.beat" :class="{ doubleSound : i==='❲SS❳' }">
                                 <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div>
                             </div>
                         </div>
+                        <div class="sound symbol d-flex" v-if="item.type === 'dum-dum'">
+                            <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
+                            <div class="onePre soundText" v-else><div>&ensp;</div></div>
+                            <div class="soundText" v-for="i in item.beat" :class="{ roundSound : i==='⬤' }">
+                                <div :class="{ starSound : i==='☆' }">{{ i==='-' ? '&ensp;' : i }}</div>
+                            </div> 
+                        </div> 
                     </div>
-                <!--- DumDum ----->
-                    <div class="relative" v-if="item.type === 'dum-dum'">
-                        <!-- <div class="relative"> -->
-                            <div class="sound baz d-flex">
-                                <div class="onePre" v-if="item.preBaz">{{ item.preBaz }}</div>
-                                <div class="onePre" v-else>&ensp;</div>
-                                <div v-for="i in item.baz">{{ i==='-' ? '&ensp;' : '&#10005;' }}</div> 
-                            </div>
-                            <div class="d-flex beatLines">
-                                <div class="d-flex onePre">
-                                    <div class="helfPre preBeatLeft"></div>
-                                    <div class="helfPre preBeatRight"></div>
-                                </div>
-                                <div class="d-flex oneBeat">
-                                    <div class="blank leftBlank"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="blank rightBlank"></div>
-                                </div>
-                                <div class="d-flex oneBeat">
-                                    <div class="blank leftBlank"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="blank rightBlank"></div>
-                                </div>
-                                <div class="d-flex oneBeat">
-                                    <div class="blank leftBlank"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="blank rightBlank"></div>
-                                </div>
-                                <div class="d-flex oneBeat">
-                                    <div class="blank leftBlank"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="beat"></div>
-                                    <div class="blank rightBlank"></div>
-                                </div>
-                            <!-- Repeat -->
-                                <div class="repeatMark relative" v-if="item.repeat">
-                                    <div class="repeatLine">
-                                        <div class="repeatNumber">×2</div>
-                                    </div>
-                                </div>
-                            </div>
-                        <!-- SoundText -->
-                            <div class="sound symbol d-flex">
-                                <div class="onePre" v-if="item.beat">{{ item.preBaz }}</div>
-                                <div class="onePre" v-else>&ensp;</div>
-                                <div v-for="i in item.beat">{{ i==='-' ? '&ensp;' : i }}</div>
-                            </div>  
-                        <!-- </div> -->
-                    </div>
-                <!-- </div> -->
+                </div>
             <!--- 小節操作按鈕 ----->
-                <div class="d-flex justify-content-center disappear" :ref="'drumBeat'+index">
+                <div class="d-flex justify-content-center operatorBox disappear" :ref="'drumBeat'+index">
                     <!-- <button type="button" class="btn btn-outline-dark":class="{ disabled : index === 0 }">上移</button>
                     <button type="button" class="btn btn-outline-dark ml-3 mr-5" :class="{ disabled : index === drumList.length-1 }">下移</button> -->
                     <button type="button" class="btn btn-outline-dark ml-3" @click="editBeats(index)">編輯</button>
@@ -183,68 +146,65 @@
         <div class="d-flex outer demo" v-for="(item, key) in demoDrum" :key="item.title" v-if="noData">
             <div class="d-flex" v-if="item.type === 'note'" style="width: 100%;">
                 <div class="noteWrap">
-                    <div class="note" :class="{ disappear :  !item.title }">{{item.title}}</div>
+                    <div class="note mr-2" :class="{ disappear :  !item.title }">{{item.title}}</div>
                 </div>
-                <div class="psWrap flex-grow-1">
-                    <div class="ps">{{item.note}}</div>
+                <div class="flex-grow-1 mt-1 pl-1 pr-2">
+                    <p class="ps">{{item.note}}</p>
                 </div>
             </div>
-        <!--- 小節標題 ----->
+            <!--- Djembe ----->
             <div class="instrument d-flex align-items-center" v-else="item.type !== 'note'">
                 <h2>{{item.title}}</h2> 
             </div>
-            <!--- Djembe ----->
             <div class="relative" v-if="item.type === 'djembe'">
-                <!-- <div > -->
-                    <div class="d-flex beatLines">
-                        <div class="d-flex onePre">
-                            <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : item.preBeat}"></div>
-                            <div class="helfPre preBeatRight opacity0" :class="{ opacity1 : item.preBeat}"></div>
-                        </div>
-                        <div class="d-flex oneBeat">
-                            <div class="blank leftBlank"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="blank rightBlank"></div>
-                        </div>
-                        <div class="d-flex oneBeat">
-                            <div class="blank leftBlank"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="blank rightBlank"></div>
-                        </div>
-                        <div class="d-flex oneBeat">
-                            <div class="blank leftBlank"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="blank rightBlank"></div>
-                        </div>
-                        <div class="d-flex oneBeat">
-                            <div class="blank leftBlank"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="beat"></div>
-                            <div class="blank rightBlank"></div>
-                        </div>
-                     <!-- Repeat -->
-                        <div class="repeatMark relative" v-if="item.repeat">
-                            <div class="repeatLine">
-                                <div class="repeatNumber">×{{item.repeat}}</div>
-                            </div>
+                <div class="d-flex beatLines">
+                    <div class="d-flex onePre">
+                        <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : item.preBeat}"></div>
+                        <div class="helfPre preBeatRight opacity0" :class="{ opacity1 : item.preBeat}"></div>
+                    </div>
+                    <div class="d-flex oneBeat">
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                    </div>
+                    <div class="d-flex oneBeat">
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                    </div>
+                    <div class="d-flex oneBeat">
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                    </div>
+                    <div class="d-flex oneBeat">
+                        <div class="blank leftBlank"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="beat"></div>
+                        <div class="blank rightBlank"></div>
+                    </div>
+                    <!-- Repeat -->
+                    <div class="repeatMark relative" v-if="item.repeat">
+                        <div class="repeatLine">
+                            <div class="repeatNumber">×{{item.repeat}}</div>
                         </div>
                     </div>
-                    <!-- Sound -->
-                    <div class="sound d-flex">
-                        <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
-                        <div class="onePre soundText" v-else><div>&ensp;</div></div>
-                        <div class="soundText" v-for="i in item.beat" :class="{ doubleSound : i==='❲SS❳' }">
-                            <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div>
-                        </div>
+                </div>
+                <!-- Sound -->
+                <div class="sound d-flex">
+                    <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
+                    <div class="onePre soundText" v-else><div>&ensp;</div></div>
+                    <div class="soundText" v-for="i in item.beat" :class="{ doubleSound : i==='❲SS❳' }">
+                        <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div>
                     </div>
-                <!-- </div> -->
+                </div>
             </div>
         </div>
 
@@ -272,17 +232,18 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-8">
                         <small>說明文字 ( 可留白 )</small>
-                        <input type="text" class="form-control" placeholder="請輸入說明文字" v-model="tempDrum.note" maxlength="50">
+                        <textarea type="text" class="form-control" placeholder="請輸入說明文字" v-model="tempDrum.note" maxlength="100"></textarea>
                     </div>
                 </div>
-            </div>
+            
             <div class="d-flex justify-content-center pt-3 pb-2">
                 <button type="button" class="btn btn-secondary mr-2" @click="cancel">取消</button>
                 <button type="button" class="btn btn-info" v-if="isNew" @click="submitNew">確定新增</button>
                 <button type="button" class="btn btn-info" v-else @click="submitPatch">確定修改</button>
             </div>
+        </div>
         </div>
 
     <!-- Djembe 編輯器 -->
@@ -310,22 +271,32 @@
 
                 <div><small>Djembe 鼓譜 (請使用按鈕編輯)</small></div>
                 <div class="editNotation">
-                    <div class="d-flex">
-                        <div class="custom-control custom-checkbox m-3">
-                            <input type="checkbox" class="custom-control-input" id="customCheck1" v-model="addPre" @change="checkPre">
-                            <label class="custom-control-label" for="customCheck1">加上前半拍</label>
+                    <div class="d-flex flex-wrap">
+                        <div class="custom-control custom-checkbox m-1">
+                            <input type="checkbox" class="custom-control-input" id="djembeCheck1" v-model="addPre" @change="checkPre">
+                            <label class="custom-control-label" for="djembeCheck1">加上前半拍</label>
                         </div>
-                        <div class="custom-control custom-checkbox m-3">
-                            <input type="checkbox" class="custom-control-input" id="customCheck2" v-model="addRepeat" @change="checkRepeat">
-                            <label class="custom-control-label" for="customCheck2">本節需重複</label>
+                        <div class="custom-control custom-checkbox m-1" :class="{ disappear : tempDrum.repeatWithPre}">
+                            <input type="checkbox" class="custom-control-input" id="djembeCheck2" v-model="addRepeat" @change="checkRepeat">
+                            <label class="custom-control-label" for="djembeCheck2">本節需重複</label>
+                        </div>
+                        <div class="custom-control custom-checkbox m-1" v-if="addRepeat && !nextCannotBeEffect" :class="{ disappear : tempDrum.repeatWithPre}">
+                            <input type="checkbox" class="custom-control-input" id="djembeCheck3" v-model="tempDrum.repeatWithNext">
+                            <label class="custom-control-label" for="djembeCheck3">下行一起重複</label>
+                        </div>
+                        <div class="custom-control custom-checkbox m-1" v-if="tempDrum.repeatWithPre">
+                            <input type="checkbox" class="custom-control-input" checked disabled>
+                            <label class="custom-control-label">與上行一起重複</label>
                         </div>
                     </div>
                     <!-- 標示 -->
                     <div class="relative editPreview">
                         <div class="d-flex beatLines">
                             <div class="d-flex onePre">
-                                <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
-                                <div class="helfPre preBeatRight opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
+                                <div class="helfPre preBeatLeft opacity1" v-if="addPre"></div>
+                                <div class="helfPre preBeatLeft opacity0" v-else></div>
+                                <div class="helfPre preBeatRight opacity1" v-if="addPre"></div>
+                                <div class="helfPre preBeatRight opacity0" v-else></div>
                             </div>
                             <div class="d-flex oneBeat">
                                 <div class="blank leftBlank"></div>
@@ -364,7 +335,9 @@
                         </div>
                         <!-- Sound -->
                         <div class="sound d-flex">
-                            <div class="onePre soundText" v-if="tempDrum.preBeat"><div>{{ tempDrum.preBeat==='-' ? '&ensp;' : tempDrum.preBeat }}</div></div>
+                            <div class="onePre soundText" v-if="tempDrum.preBeat">
+                                <div>{{ tempDrum.preBeat ==='' ? '&ensp;' : tempDrum.preBeat }}</div>
+                            </div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in tempDrum.beat" :class="{ doubleSound : i==='❲SS❳' }">
                                 <!-- <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div> -->
@@ -408,9 +381,7 @@
                     <button type="button" class="btn btn-info" v-if="isNew" @click="submitNew">確定新增</button>
                     <button type="button" class="btn btn-info" v-else @click="submitPatch">確定修改</button>
                 </div>  
-            </div>
-
-            
+            </div>    
         </div>
 
     <!-- DumDum 編輯器 -->
@@ -439,22 +410,41 @@
 
                 <div><small>Dum-Dum 鼓譜 (請使用按鈕編輯)</small></div>
                 <div class="editNotation">
-                    <div class="d-flex">
-                        <div class="custom-control custom-checkbox m-3">
-                            <input type="checkbox" class="custom-control-input" id="customCheck1" v-model="addPre" @change="checkPre">
-                            <label class="custom-control-label" for="customCheck1">加上前半拍</label>
+                    <div class="d-flex flex-wrap">
+                        <div class="custom-control custom-checkbox m-1">
+                            <input type="checkbox" class="custom-control-input" id="dumCheck1" v-model="addPre" @change="checkPre">
+                            <label class="custom-control-label" for="dumCheck1">加上前半拍</label>
                         </div>
-                        <div class="custom-control custom-checkbox m-3">
-                            <input type="checkbox" class="custom-control-input" id="customCheck2" v-model="addRepeat" @change="checkRepeat">
-                            <label class="custom-control-label" for="customCheck2">本節需重複</label>
+                        <div class="custom-control custom-checkbox m-1" :class="{ disappear : tempDrum.repeatWithPre}">
+                            <input type="checkbox" class="custom-control-input" id="dumCheck2" v-model="addRepeat" @change="checkRepeat">
+                            <label class="custom-control-label" for="dumCheck2">本節需重複</label>
+                        </div>
+                        <div class="custom-control custom-checkbox m-1" v-if="addRepeat && !nextCannotBeEffect" :class="{ disappear : tempDrum.repeatWithPre}">
+                            <input type="checkbox" class="custom-control-input" id="dumCheck3" v-model="tempDrum.repeatWithNext">
+                            <label class="custom-control-label" for="dumCheck3">下行一起重複</label>
+                        </div>
+                        <div class="custom-control custom-checkbox m-1" v-if="tempDrum.repeatWithPre">
+                            <input type="checkbox" class="custom-control-input" checked disabled>
+                            <label class="custom-control-label">與上行一起重複</label>
                         </div>
                     </div>
                     <!-- 標示 -->
                     <div class="relative editPreview">
+                        <div class="sound baz bazEdit d-flex">
+                            <div class="onePre soundText" v-if="tempDrum.preBaz">
+                                <div>{{ tempDrum.preBaz ==='' ? '&ensp;' : tempDrum.preBaz }}</div>
+                            </div>
+                            <div class="onePre soundText" v-else><div>&ensp;</div></div>
+                            <div class="soundText" v-for="i in tempDrum.baz">
+                                <div>{{i}}</div>
+                            </div> 
+                        </div>
                         <div class="d-flex beatLines">
                             <div class="d-flex onePre">
-                                <div class="helfPre preBeatLeft opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
-                                <div class="helfPre preBeatRight opacity0" :class="{ opacity1 : tempDrum.preBeat}"></div>
+                                <div class="helfPre preBeatLeft opacity1" v-if="addPre"></div>
+                                <div class="helfPre preBeatLeft opacity0" v-else></div>
+                                <div class="helfPre preBeatRight opacity1" v-if="addPre"></div>
+                                <div class="helfPre preBeatRight opacity0" v-else></div>
                             </div>
                             <div class="d-flex oneBeat">
                                 <div class="blank leftBlank"></div>
@@ -492,11 +482,12 @@
                             </div>
                         </div>
                         <!-- Sound -->
-                        <div class="sound d-flex">
-                            <div class="onePre soundText" v-if="tempDrum.preBeat"><div>{{ tempDrum.preBeat==='-' ? '&ensp;' : tempDrum.preBeat }}</div></div>
+                        <div class="sound symbol d-flex">
+                            <div class="onePre soundText" v-if="tempDrum.preBeat">
+                                <div>{{ tempDrum.preBeat === '' ? '&ensp;' : tempDrum.preBeat }}</div>
+                            </div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in tempDrum.beat" :class="{ doubleSound : i==='❲SS❳' }">
-                                <!-- <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div> -->
                                 <div :class="{ rollSound : i==='TT' }">{{i}}</div>
                             </div>
                         </div>
@@ -514,7 +505,7 @@
                                 <div class="d-flex pt-2">
                                     <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('⬤')">⬤</button>
                                     <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('△')">△</button>
-                                    <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('✩')">✩</button>
+                                    <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('☆')">☆</button>
                                     <button type="button" class="btn btn-outline-dark mr-2 pl-3 pr-3" @click="insertBeat('-')">-</button>
                                     <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat()">←</button>
                                 </div>
@@ -537,75 +528,8 @@
                 </div>
             </div>     
         </div>
+    <!-- </div> -->
 
-         <!-- Dum-Dum 編輯 -->
-        <!-- <div class="outer editing disappear" :class="{ active: dumdumEditing }">
-            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-if="isNew">新增 Dum-Dum 小節</h2>
-            <h2 class="mt-3 mb-5" style="color: #aaa; text-align: center;" v-else>修改 Dum-Dum 小節</h2>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="dumdum">小節標題</label>
-                    <input type="text" class="form-control" id="dumdum" placeholder="請輸入小節標題" v-model="tempDrum.title" maxlength="20"
-                        style="font-size:24px; font-weight:500; color: #000;">
-                </div>
-                <div class="form-group col-md-8">
-                    <label for="inputEmail4">快速輸入</label>
-                    <div class="d-flex">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Sangban')">Sangban</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Dununba')">Dununba</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="quickInsert('Kenkeni')">Kenkeni</button>
-                        <button type="button" class="btn btn-outline-dark" @click="quickInsert('Sangban+ Dununba +Kenkeni')">Sangban+ Dununba+ Kenkeni</button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-7">
-                    <label for="inputPassword4">Dum-Dum 鼓譜 ( - 號代表空拍)</label>
-                    <input type="text" class="form-control" id="tempBeat" disabled :Value="tempBaz" maxlength="16" placeholder="請使用按鈕輸入"
-                        style="font-size:24px; letter-spacing: 5px; font-family: monospace; font-variant-numeric: tabular-nums;">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputEmail4">請使用按鈕輸入</label>
-                    <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('✕')">✕</button>
-                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('-')">-</button>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputEmail4">刪除按鈕</label>
-                    <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat('baz')">←</button>
-                        <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat('baz')">清空</button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-7">
-                    <input type="text" class="form-control" id="tempBaz" disabled :Value="tempBeat" maxlength="16" placeholder="請使用按鈕輸入"
-                    style="font-size:24px; letter-spacing: 5px; font-family: monospace; font-variant-numeric: tabular-nums;">
-                </div>
-                <div class="form-group col-md-3">
-                    <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('⬤')">⬤</button>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="insertBeat('△')">△</button>
-                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('✩')">✩</button>
-                        <button type="button" class="btn btn-outline-dark pl-3 pr-3" @click="insertBeat('-')">-</button>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <div class="d-flex pt-1">
-                        <button type="button" class="btn btn-outline-danger mr-2" @click="backWardBeat('beat')">←</button>
-                        <button type="button" class="btn btn-outline-danger mr-2" @click="clearBeat('beat')">清空</button>
-                    </div>
-                </div>
-            </div>  
-            <div class="d-flex justify-content-center mt-5">
-                <button type="button" class="btn btn-outline-dark mr-3" @click="cancel">取消</button>
-                <button type="button" class="btn btn-outline-info mr-4" v-if="isNew" @click="submitNew">確定新增</button>
-                <button type="button" class="btn btn-outline-info mr-4" v-else @click="submitPatch">確定修改</button>
-            </div>
-        </div> -->
-        
         
         <!-- <div class="d-flex justify-content-between outer borderCCC hidden-print" :class="{ disappear : isEditing }" style="transition: 0s;">
             <div>
@@ -623,7 +547,7 @@
         <div class="outer borderCCC editing hidden-print disappear" :class="{ active : isOutputing }" style="transition: 0s;">
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-dark mr-5" @click="offOutput"> 取消匯出，繼續編輯 </button>
-                <!-- <button type="button" class="btn btn-outline-info ml-5" @click="print"> 匯出圖片 </button> -->
+                <button type="button" class="btn btn-outline-info ml-5" @click="print"> 匯出圖片 </button>
                 <button type="button" class="btn btn-outline-info ml-2" @click="printPdf"> 匯出PDF </button>
             </div>
             <div class="d-flex justify-content-center mt-2">
@@ -642,8 +566,8 @@
     </div>
 </div>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script> 
-<script src="https://unpkg.com/html2canvas@1.0.0-rc.5/dist/html2canvas.js"></script>  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script> 
+<script src="https://unpkg.com/html2canvas@1.0.0-rc.5/dist/html2canvas.js"></script> 
 
     <script src="all.js"></script>
 </body>

@@ -21,6 +21,7 @@ var app = new Vue({
         justDeletedOrder: false,
         addPre: false,
         addRepeat: false,
+        nextCannotBeEffect: false,
         fullBeats: 16,
         tempBeat: "",
         tempBaz: "",
@@ -69,6 +70,9 @@ var app = new Vue({
             this.tempDrum.beat.pop();
             this.showBeat();
         },
+        checkRepeatNext() {
+
+        },
         checkRepeat(){
             if ( this.addRepeat ) {
                 this.tempDrum.repeat = 2;
@@ -78,9 +82,11 @@ var app = new Vue({
         },
         checkPre(){
             if ( this.addPre ) {
-                this.tempDrum.preBeat = '-';
+                this.tempDrum.preBeat = '';
+                this.tempDrum.preBaz = '';
             } else {
                 delete this.tempDrum.preBeat;
+                delete this.tempDrum.preBaz;
             }
         },
         openNav(){
@@ -141,11 +147,12 @@ var app = new Vue({
             this.isEditing = false;
             this.isOutputing = false;
         },
-        // print(){
-        //     html2canvas(document.body).then(function(canvas) {
-        //         document.body.appendChild(canvas);
-        //     });
-        // },
+        print(){
+            var page = $('#page');
+            html2canvas(page).then(function(canvas) {
+                document.body.appendChild(canvas);
+            });
+        },
         showBeat() {
             var beat = this.tempDrum.beat;
             var baz = this.tempDrum.baz;
@@ -178,6 +185,7 @@ var app = new Vue({
             this.tempDrum.baz = [];
             this.addPre = false;
             delete this.tempDrum.preBeat;
+            delete this.tempDrum.preBaz;
             this.addRepeat = false;
             delete this.tempDrum.addRepeat;
             //  以下是為了讓畫面render而瞎忙
@@ -197,8 +205,18 @@ var app = new Vue({
                 this.closeOperator();
             }
         },
+        containsKey(obj, key ) {
+            return Object.keys(obj).includes(key);
+        },
         addBeats(drum) {
             var length = this.drumList.length;
+            if ( length > 0 ) {
+                var preDrum = this.drumList[length - 1];
+                var beenEffected = this.containsKey(preDrum, 'repeatWithNext');
+                if ( beenEffected ) {
+                    this.tempDrum.repeatWithPre = true;
+                }
+            }
             this.tempDrum.type = drum;  
             this.isEditing = true;
             this.isNavClose = true;
@@ -208,33 +226,36 @@ var app = new Vue({
                 this.noteEditClosed = false;
                 this.scrollToBottom ();
             } else if ( drum === "djembe" ) {
-                // this.showBeat();
                 this.djembeEditClosed = false;
                 this.scrollToBottom ();
             } else if ( drum === 'dum-dum') {
-                // this.showBeat();
                 this.dumdumEditClosed = false;
                 this.scrollToBottom ();
             }
         },
         editBeats(drum) {
             if ( !this.isEditing) {
-                var length = this.drumList.length;
+                // 確定下段是否已有repeat
+                let length = this.drumList.length;
+                let isFinalItem = drum === length - 1 ? true : false;
+                if ( !isFinalItem ) {
+                    let next = this.drumList[ drum + 1];
+                    this.nextCannotBeEffect = this.containsKey(next, 'repeat');
+                }
                 this.isEditing = true;
                 this.isNavClose = true;
                 this.closeOperator();
                 this.showSelectedOuter();
+                this.addRepeat = this.containsKey(this.drumList[drum], 'repeat');
                 this.tempDrum = JSON.parse(JSON.stringify(this.drumList[drum]));
                 var type = this.tempDrum.type;
                 if( this.tempDrum.type ==="note" ) {
                     this.noteEditClosed = false;
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === "djembe" ) {
-                    // this.showBeat();
                     this.djembeEditClosed = false;
                     this.scrollToBottom ();
                 } else if ( this.tempDrum.type === 'dum-dum') {
-                    // this.showBeat();
                     this.dumdumEditClosed = false;
                     this.scrollToBottom ();
                 }   
@@ -243,12 +264,9 @@ var app = new Vue({
     // ------input 輸入與刪除功能按鈕------------------------- 
 
         quickInsert(word) {
-            this.tempDrum.title = word;
-            //  以下是為了讓畫面render而瞎忙
-            this.tempDrum.beat.push(0);
-            this.showBeat();
-            this.tempDrum.beat.pop();
-            this.showBeat();
+            var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
+            newTemp.title = word;
+            this.tempDrum = newTemp ;
         },
         changeRepeatTimes(x) {
             if ( x === '+') {
@@ -262,7 +280,7 @@ var app = new Vue({
         insertBeat(s) {
             var length = this.tempDrum.beat.length;  
             if ( this.addPre ) {
-                if ( this.tempDrum.preBeat === '-' ) {
+                if ( this.tempDrum.preBeat === '' ) {
                     var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
                     newTemp.preBeat = s ;
                     this.tempDrum = newTemp ; 
@@ -282,33 +300,47 @@ var app = new Vue({
             }
         },
         insertBaz(s) { 
-            
-            var length = this.tempDrum.baz.length;
-            if( length < this.fullBeats ) {
-                this.tempDrum.baz.push(s);
-                // s ==='-' ? this.tempDrum.baz.push(0) : this.tempDrum.baz.push(s)
+            var length = this.tempDrum.baz.length;  
+            if ( this.addPre ) {
+                if ( this.tempDrum.preBaz === '' ) {
+                    var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
+                    newTemp.preBaz = s ;
+                    this.tempDrum = newTemp ; 
+                } else {
+                    if ( length < this.fullBeats ) {
+                        this.tempDrum.baz.push(s);
+                    }
+                }   
+            } else {
+                if ( length < 1) {
+                    var newTemp = JSON.parse(JSON.stringify(this.tempDrum));
+                    newTemp.baz.push(s);
+                    this.tempDrum = newTemp ; 
+                } else if ( length < this.fullBeats ) {
+                    this.tempDrum.baz.push(s);
+                }
             }
-            this.showBeat();
         },
         clearBeat() {
             this.tempDrum.beat = [];
             this.tempDrum.baz = [];
             if ( this.addPre ) {
-                this.tempDrum.preBeat = '-';
+                this.tempDrum.preBeat = '';
+                this.tempDrum.preBaz = '';
             };
-        },
-        clearBaz() {
-            this.tempDrum.baz = [];
         },
         backWardBeat() {
             var length = this.tempDrum.beat.length;
-            console.log(length);
-            if ( this.addPre && length <1 ) {
-                this.tempDrum.preBeat = '-';
+            if ( this.addPre && length < 1 ) {
+                this.tempDrum.preBeat = '';
             }
             this.tempDrum.beat.pop();
         },
         backWardBaz() {
+            var length = this.tempDrum.baz.length;
+            if ( this.addPre && length < 1 ) {
+                this.tempDrum.preBaz = '';
+            }
             this.tempDrum.baz.pop();
         },
 
@@ -327,7 +359,7 @@ var app = new Vue({
             this.offEditing();  
         },
         submitNew() {
-            let temp = this.tempDrum;              
+            let temp = this.tempDrum;     
             let notEmpty = temp.title || temp.note || temp.baz.length > 0 || temp.beat.length > 0 ;
 
             if ( notEmpty === false ) {
@@ -345,6 +377,13 @@ var app = new Vue({
             this.offEditing();
             this.removeSelectedOuter();
             let order = this.selectedOrder;
+            let length = this.drumList.length;
+            let isFinalItem = order === length-1 ? true : false;
+            let isEffectNext = this.containsKey(this.tempDrum, 'repeatWithNext');
+            if( !isFinalItem && isEffectNext ) {
+                let next = this.drumList[ order + 1 ];
+                next.repeatWithPre = true;
+            }
             this.drumList.splice(order, 1 , this.tempDrum);
             this.resetTempDrum();
         },

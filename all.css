@@ -9,28 +9,7 @@ body {
 div, .container {
     padding: 0;
 }
-.repeatMark {
-    height: 150%;
-}
-.repeatLine {
-    position: absolute;
-    height: 100%;
-    width: 10px;
-    border: 1px solid darkred;
-    border-left: 0;
-    top: 10%;
-    /* top: 50%; */
-    left: 10px;
-    z-index: 1;
-}
-.repeatNumber {
-    position: absolute;
-    top: 10%;
-    left: 15px;
-    color: darkred;
-    font-size: 20px;
-    font-weight: 600;
-}
+
 /* ---- Nav Bar ---------*/
 .nav {
     width: 100vw;
@@ -135,7 +114,7 @@ div, .container {
     width: 100vw;
     max-width: 1000px;
     /* padding: 5% 5px 4% 10px; */
-    padding: 3% 5px 3% 10px;
+    padding: 5% 5px 1% 10px;
     border: 1px solid rgba(255, 255, 255, 0);
     box-sizing: border-box;
     transition: 0.3s;
@@ -166,12 +145,9 @@ div, .container {
 
 .editing {
     position: fixed;
-    background-color: #FFF;
     bottom: 0;
     width: 100vw;
     max-width: 1000px;
-    border: 3px solid #FFAB9D;
-    box-sizing: border-box;
     box-shadow: 0 0 5px #ccc;
     z-index: 10;
     transition: 0.5s;
@@ -195,6 +171,9 @@ div, .container {
 }
 .editInner {
     padding: 2% 6%;
+    background-color: #FFF;
+    border: 3px solid #FFAB9D;
+    box-sizing: border-box;
 }
 .editInner small {
     color: #555;
@@ -206,19 +185,6 @@ div, .container {
 .editNotation {
     background-color: #EEE;
     padding: 5px;
-}
-
-.active {
-    max-height: 1200px;
-    padding: 20px;
-    transition: 0.5s;
-    opacity: 1;
-}
-.opacity0 {
-    opacity: 0;
-}
-.opacity1 {
-    opacity: 1;
 }
 #tempBeat {
     font-size: 60px;
@@ -235,8 +201,7 @@ div, .container {
 
 /*  黑色色塊  */
 .noteWrap {
-    min-width: 20%;
-    height: 20px;
+    flex-shrink: 0;
 }
 .note {
     width: fit-content;
@@ -245,19 +210,16 @@ div, .container {
     background-color: black;
     color: white;
     font-family: sans-serif;
-    /* font-size: 16px; */
-    font-size: 1rem;
+    font-size: 16px;
     font-weight: 500;
     margin: 0;
-    line-height: 2rem;
-}
-.psWrap {
-    padding-right: 5vw;
+    line-height: 32px;
+    text-align: center;
 }
 .ps {
-    /* margin-left: 50px; */
     font-size: 18px;
-    /* padding: 10px; */
+    margin-bottom: 8px;
+    margin-left: 20px;
 }
 .demoWarning {
     width: 100%;
@@ -297,14 +259,15 @@ div, .container {
     height: 100%;
 }
 .soundText {
-    margin-top: -5px;
     position: relative;
 }
 .soundText div{
     width: 100%;
     position: absolute;
+    top: 0;
     font-family: monospace;
     font-size: 32px;
+    line-height: 30px;
     font-weight: 400;
     text-align: center;
 }
@@ -318,28 +281,12 @@ div, .container {
 }
 
 /*  Dum-Dum  */
-/* .symbol {
-    width: 72.2vw;
-    max-width: 722px;
-    height: 5vw;
-    max-height: 27px;
-} */
-.symbol div{
-    /* width: 28px;
-    font-size: 32px;
-    line-height: 20px;
-    margin: -2px 9px 0 9px; */
-    width: 5.56%;
-    height: 100%;
-    font-family: monospace;
-    font-variant-numeric: tabular-nums;   
-    font-size: 32px;
-    font-weight: 400;
-    text-align: center;
-    margin-top: -10px;
+.roundSound div {
+    font-size: 28px;
 }
-
-/*  鏘鏘  */
+.soundText .starSound {
+    font-size: 38px;
+}
 .relative {
     position: relative;
 }
@@ -347,20 +294,11 @@ div, .container {
     position: absolute;
     z-index: 1;
     max-height: 27px;
-    margin-top: -16px;
-    /* margin-top: -2.5vw; */
+    /* margin-top: -16px; */
+    top: -13px;
 }
-.baz div {
-    /* width: 28px;
-    font-size: 30px; */
-    width: 5.56%;
-    height: 100%;
-    font-family: monospace;
-    font-variant-numeric: tabular-nums;   
-    font-size: 32px;
-    font-weight: 400;
-    text-align: center;
-    margin-top: -5px;
+.bazEdit {
+    top: 0;
 }
 
 /*  節拍線繪製--------------------------------------節拍線繪製  */
@@ -426,27 +364,72 @@ div, .container {
     border-left: 1px solid #777;
     box-sizing: border-box;
 }
-
-
+/* -------Repeat Mark------------ */
+.repeatMark {
+    height: 150%;
+}
+.repeatLine {
+    position: absolute;
+    height: 100%;
+    width: 10px;
+    border: 1px solid darkred;
+    border-left: 0;
+    top: 10%;
+    left: 10px;
+    z-index: 1;
+}
+.repeatNumber {
+    position: absolute;
+    top: 10%;
+    left: 15px;
+    color: darkred;
+    font-size: 20px;
+    font-weight: 600;
+}
+.repeatTogether .repeatLine{
+    height: 400%;
+}
+.repeatTogether .repeatNumber {
+    top: 40%;
+}
+.operatorBox {
+    width: 100%;
+    margin-top: 15px;
+}
 
 
 .red-border {
-    border: 1px solid rgba(255, 0, 0, 0.4);
+    border: 1px solid #fc8671;
 }
 .red-border:hover {
-    border: 1px solid rgba(255, 0, 0, 0.4);
+    border: 1px solid #fc8671;
 }
 .display {
     display: none;
 }
+.displayOff {
+    display: inherit;
+}
 .disappear {
     max-height: 0;
     padding: 0;
-    /* opacity: 0; */
+    opacity: 0;
     overflow: hidden;
     transition: 0s;
     /* border-color: rgba(255, 255, 255, 0); */
     box-sizing: border-box;
+}
+.active {
+    max-height: 1200px;
+    padding: 20px;
+    transition: 0.5s;
+    opacity: 1;
+}
+.opacity0 {
+    opacity: 0;
+}
+.opacity1 {
+    opacity: 1;
 }
 
 @media only screen and (max-width: 600px) {
@@ -470,21 +453,22 @@ div, .container {
     }
     .outer {
         flex-wrap: wrap;
-        padding: 3% 5px 3% 10px;
+        padding: 4% 5px 1% 10px;
+    }
+    .borderHoverChange:hover {
+        border: 1px solid rgba(255, 255, 255, 0);
     }
     #page {
         max-width: 200vw;
     }
-    .noteWrap {
-        min-width: 30%;
-    }
-    .note {
+    .note{
         font-size: 12px;
-        padding: 5px;
-        line-height: 36px;
+        padding: 1px 10px;
+        margin: 0;
     }
     .ps {
-        font-size: 12px;
+        font-size: 16px;
+        margin: 0;
     }
     .demoWarning {
         padding-right: 15px;
@@ -505,7 +489,8 @@ div, .container {
     }
     .soundText div{
         font-size: 16px;
-        margin-top: -4px;
+        line-height: 16px;
+        top: -2px;
         font-weight: 400;
     }
     .doubleSound div{
@@ -518,15 +503,17 @@ div, .container {
         margin-left: 10%;
         letter-spacing: 0;
     }
-    .symbol div{
+    .roundSound div {
         font-size: 14px;
-        margin-top: -10px;
+    }
+    .soundText .starSound {
+        font-size: 18px;
     }
     .baz {
-        margin-top: -1.1vw;
+        top: -5px;
     }
-    .baz div {
-        font-size: 14px;
+    .bazEdit {
+        top: 10px;
     }
     .onePre {
         margin-left: 5px;
@@ -572,19 +559,37 @@ div, .container {
         transition: 0s;
         border: 0;
     }
+    .active {
+        max-height: 1200px;
+        padding: 20px;
+        transition: 0.5s;
+        opacity: 1;
+    }
+    .opacity0 {
+        opacity: 0;
+    }
+    .opacity1 {
+        opacity: 1;
+    }
 }
 @media screen and (min-width:601px) and (max-width: 990px) {
     .container {
         margin: 0;
     }
-    .noteWrap {
-        min-width: 20%;
-    }
     .ps {
-        font-size: 16px;
+        font-size: 18px;
     }
     .outer {
         padding: 6% 5px 5% 10px;
+    }
+    .borderHoverChange:hover {
+        border: 1px solid rgba(255, 255, 255, 0);
+    }
+    .title {
+        font-size: 24px;
+    }
+    .instrument h2 {
+        font-size: 20px;
     }
     .soundText div{
         font-size: 28px;
@@ -601,17 +606,12 @@ div, .container {
         margin-left: 10%;
         letter-spacing: -1px;
     }
-    .symbol div{
-        font-size: 28px;
-        margin-top: -10px;
+    .roundSound div {
+        font-size: 26px;
     }
-    .baz {
-        margin-top: -1.8vw;
+    .soundText .starSound {
+        font-size: 32px;
     }
-    .baz div {
-        font-size: 28px;
-    }
-
     .editing {
         max-height: 85vh;
         overflow: scroll;
@@ -623,6 +623,18 @@ div, .container {
         overflow: hidden;
         transition: 0s;
         border: 0;
+    }
+    .active {
+        max-height: 1200px;
+        padding: 20px;
+        transition: 0.5s;
+        opacity: 1;
+    }
+    .opacity0 {
+        opacity: 0;
+    }
+    .opacity1 {
+        opacity: 1;
     }
 }
 @media print {
