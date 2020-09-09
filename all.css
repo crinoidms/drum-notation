@@ -31,6 +31,7 @@ div, .container {
     font-size: 20px;
     font-weight: 600;
 }
+/* ---- Nav Bar ---------*/
 .nav {
     width: 100vw;
     max-width: 1000px;
@@ -78,11 +79,13 @@ div, .container {
     transition: 0.5s;
     opacity: 1;
 }
+/* ---- close Btn ---------*/
 .closeBtn {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     border: 2px solid #FFAB9D;
+    box-sizing: border-box;
     color: #FFAB9D;
     font-size: 20px;
     line-height: 25px;
@@ -97,6 +100,28 @@ div, .container {
     transform: scale(1.2, 1.2);
     background-color: #000;
 }
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+  }
+  .close:before, .close:after {
+    position: absolute;
+    left: 15px;
+    top: 4px;
+    content: ' ';
+    height: 20px;
+    width: 2px;
+    background-color: #FFAB9D;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
 #page {
     max-width: 1000px;
 }
@@ -145,17 +170,12 @@ div, .container {
     /* border-color: rgba(255, 255, 255, 0); */
     box-sizing: border-box;
 }
-/* .disappear:hover {
-    border: 0;
-} */
 .editing {
     position: fixed;
     background-color: #FFF;
     bottom: 0;
     width: 100vw;
     max-width: 1000px;
-    max-height: 85vh;
-    overflow: scroll;
     border: 3px solid #FFAB9D;
     box-sizing: border-box;
     box-shadow: 0 0 5px #ccc;
@@ -170,8 +190,10 @@ div, .container {
 }
 .closeEditBtn {
     border: 1px solid #FFF;
-    color: #FFF;
 }
+.closeEditBtn .close:before, .closeEditBtn .close:after {
+    background-color: #FFF;
+  }
 .editTitle h3 {
     color: #FFF;
     font-size: 22px;
@@ -581,6 +603,10 @@ div, .container {
         padding: 20px;
         transition: 0.5s;
         opacity: 1;
+    }
+    .editing {
+        max-height: 85vh;
+        overflow: scroll;
     }
 
 }

@@ -21,7 +21,7 @@
                 <div class="navBtn" :class="{ disappear : isEditing }" @click="openNav">＋</div>
                 <div class="col-10 col-sm-5 col-md-4 col-lg-3 navBar" :class="{ disappear : isNavClose }">
                     <!-- <div class="col-10 col-sm-5 col-md-4 col-lg-3 navBar"> -->
-                    <div class="closeBtn" @click="closeNav">✕</div>
+                    <div class="closeBtn" @click="closeNav"><div class="close"></div></div>
                     <button type="button" class="btn btn-outline-dark btn-block" @click="addBeats('djembe')"> + Djembe </button>
                     <button type="button" class="btn btn-outline-dark btn-block mt-3" @click="addBeats('dum-dum')"> + Dum-Dum </button>
                     <button type="button" class="btn btn-outline-dark btn-block mt-3" @click="addBeats('note')"> + 段落說明 </button>
@@ -251,7 +251,7 @@
         <!-- Note 編輯 -->
         <div class="editing" :class="{ disappear: noteEditClosed }">
             <div class="editTitle">
-                <div class="closeBtn closeEditBtn" @click="cancel">✕</div>
+                <div class="closeBtn closeEditBtn" @click="cancel"><div class="close"></div></div>
                 <h3 class="" v-if="isNew">新增標註</h3>
                 <h3 class="" v-else>修改標註</h3>
             </div>
@@ -288,7 +288,7 @@
     <!-- Djembe 編輯器 -->
         <div class="editing" :class="{ disappear: djembeEditClosed }">
             <div class="editTitle">
-                <div class="closeBtn closeEditBtn" @click="cancel">✕</div>
+                <div class="closeBtn closeEditBtn" @click="cancel"><div class="close"></div></div>
                 <h3 class="" v-if="isNew">新增 Djembe 小節</h3>
                 <h3 class="" v-else>修改 Djembe 小節</h3>
             </div>
@@ -416,7 +416,7 @@
     <!-- DumDum 編輯器 -->
         <div class="editing" :class="{ disappear: dumdumEditClosed }">
             <div class="editTitle">
-                <div class="closeBtn closeEditBtn" @click="cancel">✕</div>
+                <div class="closeBtn closeEditBtn" @click="cancel"><div class="close"></div></div>
                 <h3 class="" v-if="isNew">新增 Dum-Dum 小節</h3>
                 <h3 class="" v-else>修改 Dum-Dum 小節</h3>
             </div>
