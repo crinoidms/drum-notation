@@ -65,6 +65,18 @@ div, .container {
     background-color: #fc8671;
     box-shadow: 0 2px #ccc;
 }
+.navBtn:before, .navBtn:after {
+    position: absolute;
+    left: 38px;
+    top: 24px;
+    content: ' ';
+    height: 30px;
+    width: 3px;
+    background-color: #FFF;
+}
+.navBtn:after {
+    transform: rotate(90deg);
+}
 .navBar {
     height: auto;
     padding: 50px;
@@ -100,28 +112,21 @@ div, .container {
     transform: scale(1.2, 1.2);
     background-color: #000;
 }
-.close {
+.closeBtn:before, .closeBtn:after {
     position: absolute;
-    right: 0;
-    top: 0;
-    width: 30px;
-    height: 30px;
-  }
-  .close:before, .close:after {
-    position: absolute;
-    left: 15px;
+    left: 12px;
     top: 4px;
     content: ' ';
     height: 20px;
     width: 2px;
     background-color: #FFAB9D;
-  }
-  .close:before {
+}
+.closeBtn:before {
     transform: rotate(45deg);
-  }
-  .close:after {
+}
+.closeBtn:after {
     transform: rotate(-45deg);
-  }
+}
 #page {
     max-width: 1000px;
 }
@@ -188,10 +193,10 @@ div, .container {
     background-color: #FFAB9D;
     padding: 10px 0 5px 3%;
 }
-.closeEditBtn {
-    border: 1px solid #FFF;
-}
-.closeEditBtn .close:before, .closeEditBtn .close:after {
+/* .editTitle .closeBtn {
+    border: 2px solid #FFF;
+} */
+.editTitle .closeBtn:before, .editTitle .closeBtn:after {
     background-color: #FFF;
   }
 .editTitle h3 {
@@ -458,6 +463,10 @@ div, .container {
         top: 5px;
         right: 5px;
     }
+    .navBtn:before, .navBtn:after {
+        left: 28px;
+        top: 15px;
+    }
     .outer {
         flex-wrap: wrap;
         padding: 3% 5px 3% 10px;
@@ -549,6 +558,10 @@ div, .container {
         font-family: 'Arial Narrow';
         letter-spacing: 0;
         top: 0;
+    }
+    .editing {
+        max-height: 85vh;
+        overflow: scroll;
     }
    
 }
