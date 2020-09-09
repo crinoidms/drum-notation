@@ -3,13 +3,13 @@ var app = new Vue({
     data: {
         title: "Djembe 鼓譜",
         isFourBeats: true,
+        isMobile: false,
         tempTitle: "",
         noData: true, 
         titleEditing: false,
         titleShowing: true,
         djembeEditClosed: true,
         dumdumEditClosed: true,
-        // noteEditing: false,
         noteEditClosed: true,
         isNavClose: true,
         isEditing: false,
@@ -70,16 +70,21 @@ var app = new Vue({
             this.tempDrum.beat.pop();
             this.showBeat();
         },
-        checkRepeatNext() {
-
-        },
-        checkRepeat(){
+        toggleIsRepeat(){
             if ( this.addRepeat ) {
                 this.tempDrum.repeat = 2;
             } else {
                 delete this.tempDrum.repeat;
+                var isContain = this.containsKey(this.tempDrum, 'repeatWithNext');
+                if ( isContain ) {
+                    delete this.tempDrum.repeatWithNext;
+                }
             }
         },
+        // toggleWithNext() {
+        //     var isContain = this.containsKey(this.tempDrum, 'repeatWithNext');
+        //     isContain ? delete this.tempDrum.repeatWithNext : this.tempDrum.repeatWithNext = true ;
+        // },
         checkPre(){
             if ( this.addPre ) {
                 this.tempDrum.preBeat = '';
@@ -147,11 +152,34 @@ var app = new Vue({
             this.isEditing = false;
             this.isOutputing = false;
         },
-        print(){
-            var page = $('#page');
-            html2canvas(page).then(function(canvas) {
-                document.body.appendChild(canvas);
+        saveImg(){
+            html2canvas(document.querySelector("#page"), {
+                scale:3
+            }).then(canvas => {
+                this.downloadImg(canvas.toDataURL("image/png", 1));
             });
+
+            // if ( this.isMobile ) {
+            //     html2canvas(document.querySelector("#page"), {
+            //         scale:3
+            //     }).then(canvas => {
+            //         this.downloadImg(canvas.toDataURL("image/png", 1));
+            //     });
+            // } else {
+            //     html2canvas(document.querySelector("#page"), {
+            //         // width: 1240, height: 1754
+            //     }).then(canvas => {
+            //         this.downloadImg(canvas.toDataURL("image/png", 1));
+            //     });
+            // }
+        },
+        downloadImg(url){
+            var a = $("<a style='display:none' id='js-downloader'>")
+            .attr("href", url)
+            .attr("download", this.title+".png")
+            .appendTo("body");
+            a[0].click();
+            a.remove();
         },
         showBeat() {
             var beat = this.tempDrum.beat;
@@ -184,10 +212,8 @@ var app = new Vue({
             this.tempDrum.beat = [];
             this.tempDrum.baz = [];
             this.addPre = false;
-            delete this.tempDrum.preBeat;
-            delete this.tempDrum.preBaz;
             this.addRepeat = false;
-            delete this.tempDrum.addRepeat;
+            delete this.tempDrum.repeatWithPre;
             //  以下是為了讓畫面render而瞎忙
             // this.tempDrum.beat.push(0);
             // this.showBeat();
@@ -209,6 +235,7 @@ var app = new Vue({
             return Object.keys(obj).includes(key);
         },
         addBeats(drum) {
+            this.resetTempDrum();
             var length = this.drumList.length;
             if ( length > 0 ) {
                 var preDrum = this.drumList[length - 1];
@@ -379,13 +406,29 @@ var app = new Vue({
             let order = this.selectedOrder;
             let length = this.drumList.length;
             let isFinalItem = order === length-1 ? true : false;
-            let isEffectNext = this.containsKey(this.tempDrum, 'repeatWithNext');
-            if( !isFinalItem && isEffectNext ) {
-                let next = this.drumList[ order + 1 ];
-                next.repeatWithPre = true;
+        // check isEffectNext
+            let isEffectNext = false
+            let contain = this.containsKey(this.tempDrum, 'repeatWithNext');
+            if (contain) {
+                this.tempDrum.repeatWithNext ? isEffectNext = true : delete this.tempDrum.repeatWithNext
+            }
+            if ( !isFinalItem ) {
+                if ( !isEffectNext ) {
+                    this.deleteNextRepeatPre(order);
+                } else {
+                    let next = this.drumList[ order + 1 ];
+                    next.repeatWithPre = true;
+                }   
             }
             this.drumList.splice(order, 1 , this.tempDrum);
             this.resetTempDrum();
+        },
+        deleteNextRepeatPre(order){
+            let nextOrder = order+1;
+            let nextBeenEffected = this.containsKey( this.drumList[nextOrder], 'repeatWithPre');
+            if(nextBeenEffected) {
+                delete this.drumList[nextOrder].repeatWithPre;
+            }
         },
 
 
@@ -464,8 +507,17 @@ var app = new Vue({
             }
         },
 
-        scrollToBottom () {
+        scrollToBottom() {
             $(document).scrollTop($(document).height());
         },
+        checkDevice() {
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                this.isMobile = true;
+                // console.log(this.isMobile);
+            } 
+        }
     },
+    mounted() {
+        this.checkDevice();
+    }
 })
