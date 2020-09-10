@@ -1,19 +1,14 @@
 var app = new Vue({
     el: '#app',
     data: {
-        title: "Djembe 鼓譜",
-        isFourBeats: true,
         isMobile: false,
-        tempTitle: "",
         noData: true, 
         titleEditing: false,
         titleShowing: true,
-        djembeEditClosed: true,
-        dumdumEditClosed: true,
-        noteEditClosed: true,
+        editClosed: true,
         isNavClose: true,
         isEditing: false,
-        isSaving: false,
+        // isSaving: false,
         isOperatorOpened:false,
         isNew: false,
         isOutputing: false,
@@ -22,9 +17,14 @@ var app = new Vue({
         addPre: false,
         addRepeat: false,
         nextCannotBeEffect: false,
+        title: "Djembe 鼓譜",
+        isFourBeats: true,
+        tempTitle: "",
         fullBeats: 16,
+        beatLines: 4,
         tempBeat: "",
         tempBaz: "",
+        tempUploadData: [],
         tempDrum: {
             'beat':[],
             'baz': [],
@@ -36,7 +36,7 @@ var app = new Vue({
                 'title': "畫面示意",
             },
             {
-                'type': "djembe",
+                'type': "Djembe",
                 'title': "Djembe 1",
                 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S'],
                 // 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
@@ -45,63 +45,75 @@ var app = new Vue({
             },
         ],
         drumList: [
-            // {
-            //     'type': "djembe",
-            //     'title': "Djembe 1",
-            //     'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
-            //     'preBeat': 'T',
-            //     'repeat': 3,
-            // },
+            {
+                'type': "Djembe",
+                'title': "Djembe 1",
+                'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S'],
+                'preBeat': 'T',
+                'repeat': 3,
+            },
         ],
     },
     methods: {
-        // changeFullBeats() {
-        //     this.isFourBeats = !this.isFourBeats;
-        //     if ( this.isFourBeats ) {
-        //         this.fullBeats = 16;
-        //     } else {
-        //         this.fullBeats = 12;
-        //     }
-        //     this.closeNav();
-        // },
-         makeVueBuzy() {
-            this.tempDrum.beat.push(0);
-            this.showBeat();
-            this.tempDrum.beat.pop();
-            this.showBeat();
-        },
-        toggleIsRepeat(){
-            if ( this.addRepeat ) {
-                this.tempDrum.repeat = 2;
-            } else {
-                delete this.tempDrum.repeat;
-                var isContain = this.containsKey(this.tempDrum, 'repeatWithNext');
-                if ( isContain ) {
-                    delete this.tempDrum.repeatWithNext;
+        moveUp(index){
+            if ( index !== 0 ) {
+                let item = this.drumList[index];
+                let pre = this.drumList[index - 1 ];
+                itemRepeat2 = this.containsKey(item, 'repeatWithNext') || this.containsKey(item, 'repeatWithPre') ;
+                preRepeat2 = this.containsKey(pre, 'repeatWithPre') ;
+                if ( itemRepeat2 ) {
+                    alert('請先移除兩行合併重複，再進行移動')
+                } else {
+                    preRepeat2 ? newIndex = index-2 : newIndex = index-1 ;
+                    this.drumList.splice(newIndex, 0, this.drumList.splice(index, 1)[0]);
                 }
             }
         },
-        // toggleWithNext() {
-        //     var isContain = this.containsKey(this.tempDrum, 'repeatWithNext');
-        //     isContain ? delete this.tempDrum.repeatWithNext : this.tempDrum.repeatWithNext = true ;
-        // },
-        checkPre(){
-            if ( this.addPre ) {
-                this.tempDrum.preBeat = '';
-                this.tempDrum.preBaz = '';
-            } else {
-                delete this.tempDrum.preBeat;
-                delete this.tempDrum.preBaz;
+        moveDown(index){
+            let length =  this.drumList.length;
+            if ( index !== length -1 ) {
+                let item = this.drumList[index];
+                let next = this.drumList[index + 1 ];
+                itemRepeat2 = this.containsKey(item, 'repeatWithNext') || this.containsKey(item, 'repeatWithPre') ;
+                nextRepeat2 = this.containsKey(next, 'repeatWithNext') ;
+                if ( itemRepeat2 ) {
+                    alert('請先移除兩行合併重複，再進行移動')
+                } else {
+                    nextRepeat2 ? newIndex = index+2 : newIndex = index+1 ;
+                    this.drumList.splice(newIndex, 0, this.drumList.splice(index, 1)[0]);
+                }
             }
         },
-        openNav(){
-            this.isNavClose = false;
-            this.isEditing = true;
-            this.closeOperator(); 
+ // ----存檔讀檔-------------
+        checkNoData (){
+            this.drumList.length < 1 ? this.noData=true : this.noData=false;
         },
-        closeNav(){
-            this.isNavClose = true;
-            this.isEditing = false;
+        checkLoad(data) {
+            var check = data.pop();
+            if (check.fileCheck==='Drum-Notation-1.0') {
+                this.title = check.fileTitle;
+                this.isFourBeats = check.isFourBeats;
+                this.drumList = data ;
+                this.checkNoData ();
+            } else {
+                alert('上傳資料錯誤，請重新操作'); 
+            }
+            this.closeNav();
+        },
+        read() {         
+            const files = document.getElementById('fileToLoad').files;
+            if (files.length <= 0) {
+                return false;
+            }
+            
+            const fr = new FileReader();
+            
+            fr.onload = e => {
+                const result = JSON.parse(e.target.result);
+                this.checkLoad(result);
+            }
+            fr.readAsText(files.item(0));
+
         },
         fake_click(obj) {
             var ev = document.createEvent("MouseEvents");
@@ -120,27 +132,23 @@ var app = new Vue({
             this.fake_click(save_link);
         },
         clickDownload() {
-            //  要把title 加進去
-            let data = JSON.stringify(this.drumList);
-            this.export(this.title, data);
+            if ( !this.noData ) {
+                let info = { fileTitle: this.title, isFourBeats: this.isFourBeats, fileCheck: 'Drum-Notation-1.0'}
+                let tempData = JSON.parse(JSON.stringify(this.drumList));
+                tempData.push(info);
+                let data = JSON.stringify(tempData);
+                this.export(this.title, data);
+                this.isNavClose = true;
+            } 
         },
-        read() {
-            //  要建立儲存的地方，然後confirm 後再存入drumList
-            var fileToLoad = document.getElementById("fileToLoad").files[0];
-            var fileReader = new FileReader();
-            fileReader.onload = function(fileLoadedEvent) {
-                var textFromFileLoaded = fileLoadedEvent.target.result;
-                this.loadData = JSON.parse(textFromFileLoaded);
-            };
-            fileReader.readAsText(fileToLoad, "UTF-8");
-        },
-        saving(){
-            this.isSaving = true;
-        },
-        offOutput(){
-            this.isOutputing = false;
-            this.isEditing = false;
-        },
+// --------匯出----------------
+        // clickSave(){
+        //     this.offEditing();
+        //     this.closeOperator();
+        //     this.isSaving = true;
+        //     this.isEditing = true;
+        // },        
+
         output() {
             this.offEditing();
             this.closeOperator();
@@ -152,26 +160,14 @@ var app = new Vue({
             this.isEditing = false;
             this.isOutputing = false;
         },
+
+    // --------匯出圖片------------------------
         saveImg(){
             html2canvas(document.querySelector("#page"), {
-                scale:3
+                // scale:3
             }).then(canvas => {
                 this.downloadImg(canvas.toDataURL("image/png", 1));
             });
-
-            // if ( this.isMobile ) {
-            //     html2canvas(document.querySelector("#page"), {
-            //         scale:3
-            //     }).then(canvas => {
-            //         this.downloadImg(canvas.toDataURL("image/png", 1));
-            //     });
-            // } else {
-            //     html2canvas(document.querySelector("#page"), {
-            //         // width: 1240, height: 1754
-            //     }).then(canvas => {
-            //         this.downloadImg(canvas.toDataURL("image/png", 1));
-            //     });
-            // }
         },
         downloadImg(url){
             var a = $("<a style='display:none' id='js-downloader'>")
@@ -181,27 +177,24 @@ var app = new Vue({
             a[0].click();
             a.remove();
         },
-        showBeat() {
-            var beat = this.tempDrum.beat;
-            var baz = this.tempDrum.baz;
-            this.tempBeat = this.mergeBeats(beat);
-            if (baz) {
-                this.tempBaz = this.mergeBeats(baz);
-            }
+ //  ------nav------------------
+        openNav(){
+            this.isNavClose = false;
+            this.isEditing = true;
+            this.closeOperator(); 
         },
-        mergeBeats(array) {
-            var mergeBeats = "";
-            array.forEach(e => {
-                mergeBeats += e ;
-                // e === 0 ? mergeBeats += '-'  : mergeBeats += e ;
-            });
-            return mergeBeats.replace(/(.{4})/g, '$1  ');
+        closeNav(){
+            this.isNavClose = true;
+            this.isEditing = false;
         },
+
+    //  ------關閉------------------
         offEditing() {
             this.titleEditing = false;
-            this.djembeEditClosed = true;
-            this.dumdumEditClosed = true;
-            this.noteEditClosed = true;
+            this.editClosed = true;
+            // this.djembeEditClosed = true;
+            // this.dumdumEditClosed = true;
+            // this.noteEditClosed = true;
             this.isEditing = false;
             this.isNew = false;
             this.titleShowing = true;
@@ -214,12 +207,12 @@ var app = new Vue({
             this.addPre = false;
             this.addRepeat = false;
             delete this.tempDrum.repeatWithPre;
-            //  以下是為了讓畫面render而瞎忙
-            // this.tempDrum.beat.push(0);
-            // this.showBeat();
-            // this.tempDrum.beat.pop();
-            // this.showBeat();
         },
+        offOutput(){
+            this.isOutputing = false;
+            this.isEditing = false;
+        },
+        
     // ------觸發新增與修改------------------------- 
         editTitle() {
             if ( !this.isEditing ) {
@@ -236,6 +229,7 @@ var app = new Vue({
         },
         addBeats(drum) {
             this.resetTempDrum();
+            // 1. 確認是否被上段影響
             var length = this.drumList.length;
             if ( length > 0 ) {
                 var preDrum = this.drumList[length - 1];
@@ -249,16 +243,7 @@ var app = new Vue({
             this.isNavClose = true;
             this.closeOperator();
             this.isNew = true;
-            if( drum ==="note" ) {      
-                this.noteEditClosed = false;
-                this.scrollToBottom ();
-            } else if ( drum === "djembe" ) {
-                this.djembeEditClosed = false;
-                this.scrollToBottom ();
-            } else if ( drum === 'dum-dum') {
-                this.dumdumEditClosed = false;
-                this.scrollToBottom ();
-            }
+            this.editClosed = false;
         },
         editBeats(drum) {
             if ( !this.isEditing) {
@@ -276,16 +261,7 @@ var app = new Vue({
                 this.addRepeat = this.containsKey(this.drumList[drum], 'repeat');
                 this.tempDrum = JSON.parse(JSON.stringify(this.drumList[drum]));
                 var type = this.tempDrum.type;
-                if( this.tempDrum.type ==="note" ) {
-                    this.noteEditClosed = false;
-                    this.scrollToBottom ();
-                } else if ( this.tempDrum.type === "djembe" ) {
-                    this.djembeEditClosed = false;
-                    this.scrollToBottom ();
-                } else if ( this.tempDrum.type === 'dum-dum') {
-                    this.dumdumEditClosed = false;
-                    this.scrollToBottom ();
-                }   
+                this.editClosed = false; 
             }
         },
     // ------input 輸入與刪除功能按鈕------------------------- 
@@ -370,6 +346,26 @@ var app = new Vue({
             }
             this.tempDrum.baz.pop();
         },
+        toggleIsRepeat(){
+            if ( this.addRepeat ) {
+                this.tempDrum.repeat = 2;
+            } else {
+                delete this.tempDrum.repeat;
+                var isContain = this.containsKey(this.tempDrum, 'repeatWithNext');
+                if ( isContain ) {
+                    delete this.tempDrum.repeatWithNext;
+                }
+            }
+        },
+        checkPre(){
+            if ( this.addPre ) {
+                this.tempDrum.preBeat = '';
+                this.tempDrum.preBaz = '';
+            } else {
+                delete this.tempDrum.preBeat;
+                delete this.tempDrum.preBaz;
+            }
+        },
 
     // ------submit 與 cancel-------------------------      
         cancelTitleChange() {
@@ -396,11 +392,13 @@ var app = new Vue({
                 this.removeSelectedOuter();
                 this.drumList.push(this.tempDrum);
                 this.resetTempDrum();
-                this.noData = false;
+                this.checkNoData ();
+                // this.noData = false;
                 this.scrollToBottom ();
             }
         },
         submitPatch() {
+            // 未檢查空資料
             this.offEditing();
             this.removeSelectedOuter();
             let order = this.selectedOrder;
@@ -423,40 +421,41 @@ var app = new Vue({
             this.drumList.splice(order, 1 , this.tempDrum);
             this.resetTempDrum();
         },
-        deleteNextRepeatPre(order){
-            let nextOrder = order+1;
-            let nextBeenEffected = this.containsKey( this.drumList[nextOrder], 'repeatWithPre');
-            if(nextBeenEffected) {
-                delete this.drumList[nextOrder].repeatWithPre;
-            }
-        },
+        
 
 
-    // ------小節focus與刪除------------------------- 
+    // ------小節focus---------------------- 
 
         toggleOperator(drum) {
             let length = this.drumList.length;
-            if ( length > 0 ) {
+            if (  length > 0 && drum <= length-1 ) {
                 let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
                 lastOperator[0].classList.toggle("active");
-
                 let outer = lastOperator[0].parentElement ;
                 outer.classList.toggle("red-border");
                 this.isOperatorOpened = !this.isOperatorOpened ;
+                
             };
         },
         clickBeat(drum) {
-            if ( !this.isEditing ) {
-                if ( this.selectedOrder === "" ) {
-                    this.openOperator(drum);                         
-                } else if( drum !== this.selectedOrder) {
-                    this.closeOperator();
-                    this.openOperator(drum);
-                } else {
-                    this.justDeletedOrder = false;
-                    this.toggleOperator(drum);
-                }
-            }   
+            let length = this.drumList.length;
+            if (this.selectedOrder > length-1 ) {
+                // 資料已被刪除
+                this.selectedOrder ="";
+            } else {
+                if ( !this.isEditing && length > 0 ) {
+                    if ( this.selectedOrder === "") {
+                        this.openOperator(drum);                         
+                    } else if( drum !== this.selectedOrder) {
+                        this.closeOperator();
+                        this.openOperator(drum);
+                    } else {
+                        this.justDeletedOrder = false;
+                        this.toggleOperator(drum);
+                    }
+                }   
+            }
+            
         },
         showSelectedOuter() {
             if ( this.selectedOrder !== "" ) {
@@ -486,7 +485,7 @@ var app = new Vue({
         closeOperator() {
             let length = this.drumList.length;
             if ( length > 0 ) {
-                if ( this.selectedOrder !== "" ) {
+                if ( this.selectedOrder !== "") {
                     let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
                     lastOperator[0].classList.remove("active");
 
@@ -496,26 +495,78 @@ var app = new Vue({
                 }
             }
         },
-        deleteBeats(drum) {         
-            let operator = this.$refs['drumBeat'+drum];                 
-            var r = confirm("確定刪除這段嗎？");
-            if (r == true) {
-                this.drumList.splice(drum, 1 ); 
-                this.isOperatorOpened = false; 
-                this.justDeletedOrder = true;
-                this.drumList.length < 1 ? this.noData = true : this.noData = false;
+    // ---------刪除---------------
+        deleteBeats(drum) {     
+            let operator = this.$refs['drumBeat'+drum];
+            let item = this.drumList[drum];
+            if (item.repeatWithNext || item.repeatWithPre) {
+                alert('請先移除兩行合併重複，再進行刪除')
+            } else {
+                var r = confirm("確定刪除這段嗎？");
+                if (r == true) {
+                    this.drumList.splice(drum, 1 ); 
+                    this.isOperatorOpened = false; 
+                    this.justDeletedOrder = true;
+                    // this.drumList.length < 1 ? this.noData = true : this.noData = false;
+                    this.checkNoData ();
+                }
+            }
+            // v-if="!item.repeatWithNext && !item.repeatWithPre"
+        },
+        deleteNextRepeatPre(order){
+            let nextOrder = order+1;
+            let nextBeenEffected = this.containsKey( this.drumList[nextOrder], 'repeatWithPre');
+            if(nextBeenEffected) {
+                delete this.drumList[nextOrder].repeatWithPre;
             }
         },
 
-        scrollToBottom() {
-            $(document).scrollTop($(document).height());
-        },
+    // -----tools---------------------------
         checkDevice() {
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
                 this.isMobile = true;
                 // console.log(this.isMobile);
             } 
-        }
+        },
+        scrollToBottom() {
+            $(document).scrollTop($(document).height());
+        },
+        makeVueBuzy() {
+            this.tempDrum.beat.push(0);
+            this.showBeat();
+            this.tempDrum.beat.pop();
+            this.showBeat();
+        },
+
+
+        changeFullBeats() {
+            var msg = this.isFourBeats ? ' 3/4拍 ' : ' 4/4 拍 '
+            this.closeNav();
+            var r = confirm("※注意 修改拍子將清除全部資料，確定要修改成"+ msg +"？");
+            if (r == true) {
+                this.drumList = [];
+                this.isFourBeats = !this.isFourBeats;
+                this.isFourBeats ? this.fullBeats = 16 : this.fullBeats = 12
+            }  
+        },
+
+    // -----棄用------------------------- 
+        showBeat() {
+            var beat = this.tempDrum.beat;
+            var baz = this.tempDrum.baz;
+            this.tempBeat = this.mergeBeats(beat);
+            if (baz) {
+                this.tempBaz = this.mergeBeats(baz);
+            }
+        },
+        mergeBeats(array) {
+            var mergeBeats = "";
+            array.forEach(e => {
+                mergeBeats += e ;
+                // e === 0 ? mergeBeats += '-'  : mergeBeats += e ;
+            });
+            return mergeBeats.replace(/(.{4})/g, '$1  ');
+        },
     },
     mounted() {
         this.checkDevice();

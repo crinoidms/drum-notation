@@ -6,6 +6,9 @@ body {
     overscroll-behavior-y: contain;
     touch-action: manipulation;
 }
+body button{
+    border-radius: 0 !important;
+}
 div, .container {
     padding: 0;
 }
@@ -59,6 +62,8 @@ div, .container {
 .navBar {
     height: auto;
     padding: 50px;
+    max-height: 90vh;
+    overflow: scroll;
     background-color: #FFF;
     border: 3px solid #FFAB9D;
     position: absolute;
@@ -108,21 +113,37 @@ div, .container {
 }
 #page {
     max-width: 1000px;
+    min-height: 80vh;
 }
 .outer {
     cursor: pointer;
     width: 100vw;
     max-width: 1000px;
     /* padding: 5% 5px 4% 10px; */
-    padding: 5% 5px 1% 10px;
+    padding: 3% 5px 1% 10px;
     border: 1px solid rgba(255, 255, 255, 0);
     box-sizing: border-box;
     transition: 0.3s;
     break-inside: avoid;
     /* margin-bottom: 5px; */
 }
+.btn.disabled {
+    /* opacity: 0.4; */
+    cursor: not-allowed !important;
+}
 .demo {
+    /* width: 100vw;
+    max-width: 1000px;
+    height: ;
+    background-image: url("demo.png"); */
+    margin-top: -3%;
     opacity: 0.4;
+}
+.demo img {
+
+    max-width: 100%;
+    max-height: 100%;
+
 }
 .borderHoverChange:hover {
     border: 1px solid #ccc;
@@ -133,6 +154,12 @@ div, .container {
 .noborder {
     cursor: auto;
     border: 0;
+}
+.noborder:hover {
+    border: 0;
+}
+.mobileBorder {
+    border: 1px solid rgba(255, 255, 255, 0);
 }
 .noborder:hover {
     border: 0;
@@ -228,6 +255,22 @@ div, .container {
     opacity: 0.4; 
     margin-right: 10vw;
 }
+input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
 
 /*  節奏記譜  ------------------------------------- 節奏記譜  */
 /*  樂器說明  */
@@ -253,12 +296,12 @@ div, .container {
     height: 5vw;
     max-height: 27px;
 }
-.sound div{
-    width: 5.7%;
-    /* width: 8%; */
-    height: 100%;
-}
+/* .sound div{
+    
+} */
 .soundText {
+    height: 100%;
+    width: 5.7%;
     position: relative;
 }
 .soundText div{
@@ -364,6 +407,23 @@ div, .container {
     border-left: 1px solid #777;
     box-sizing: border-box;
 }
+
+/* for 三拍子 */
+.triBeat .soundText{
+    width: 7.45%;
+}
+.triBeatLine .oneBeat{
+    width: 22.35%;
+}
+.triBeatLine .onePre{
+    width: 7.45%;
+} 
+.triBeatLine .oneBeat .beat {
+    width: 33.3%;
+}
+.blank.triBlank{
+    width: 16.67%;
+}
 /* -------Repeat Mark------------ */
 .repeatMark {
     height: 150%;
@@ -453,7 +513,7 @@ div, .container {
     }
     .outer {
         flex-wrap: wrap;
-        padding: 4% 5px 1% 10px;
+        padding: 2% 5px 1% 10px;
     }
     .borderHoverChange:hover {
         border: 1px solid rgba(255, 255, 255, 0);
@@ -580,7 +640,7 @@ div, .container {
         font-size: 18px;
     }
     .outer {
-        padding: 6% 5px 5% 10px;
+        padding: 3% 5px 5% 10px;
     }
     .borderHoverChange:hover {
         border: 1px solid rgba(255, 255, 255, 0);
