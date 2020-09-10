@@ -138,7 +138,7 @@ var app = new Vue({
                 tempData.push(info);
                 let data = JSON.stringify(tempData);
                 this.export(this.title, data);
-                this.isNavClose = true;
+                this.closeNav();
             } 
         },
 // --------匯出----------------
