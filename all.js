@@ -260,8 +260,10 @@ var app = new Vue({
                 this.showSelectedOuter();
                 this.addRepeat = this.containsKey(this.drumList[drum], 'repeat');
                 this.tempDrum = JSON.parse(JSON.stringify(this.drumList[drum]));
+                this.containsKey(this.tempDrum, 'preBeat') ? this.addPre=true : this.addPre=false;
                 var type = this.tempDrum.type;
                 this.editClosed = false; 
+                console.log(this.tempDrum);
             }
         },
     // ------input 輸入與刪除功能按鈕------------------------- 
@@ -383,7 +385,8 @@ var app = new Vue({
         },
         submitNew() {
             let temp = this.tempDrum;     
-            let notEmpty = temp.title || temp.note || temp.baz.length > 0 || temp.beat.length > 0 ;
+            let hasPreBeat = this.containsKey(temp, 'preBeat');
+            let notEmpty = temp.title || temp.note || temp.baz.length > 0 || temp.beat.length > 0 || hasPreBeat;
 
             if ( notEmpty === false ) {
                 alert('未輸入任何資料'); 

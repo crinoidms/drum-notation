@@ -73,7 +73,7 @@
                     </div>
                     <div class="relative" v-if="item.type !== 'note'">
                         <div class="sound baz d-flex" :class="{ triBeat : !isFourBeats }" v-if="item.type === 'Dum-Dum'">
-                            <div class="onePre soundText" v-if="item.preBaz"><div>{{ item.preBaz }}</div></div>
+                            <div class="onePre soundText" v-if="item.preBaz"><div>{{ item.preBaz==='-' ? '&ensp;' : item.preBaz }}</div></div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in item.baz">
                                 <div>{{ i==='-' ? '&ensp;' : i }}</div>
@@ -100,14 +100,14 @@
                         </div> <!-- beatLines End -->
                     <!-- SoundText -->
                         <div class="sound d-flex" v-if="item.type === 'Djembe'" :class="{ triBeat : !isFourBeats }">
-                            <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
+                            <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat==='-' ? '&ensp;' : item.preBeat}}</div></div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in item.beat" :class="{ doubleSound : i==='❲SS❳' }">
                                 <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div>
                             </div>
                         </div>
                         <div class="sound symbol d-flex" v-if="item.type === 'Dum-Dum'" :class="{ triBeat : !isFourBeats }">
-                            <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat }}</div></div>
+                            <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat==='-' ? '&ensp;' : item.preBeat }}</div></div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in item.beat" :class="{ roundSound : i==='⬤' }">
                                 <div :class="{ starSound : i==='☆' }">{{ i==='-' ? '&ensp;' : i }}</div>

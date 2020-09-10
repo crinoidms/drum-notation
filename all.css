@@ -62,8 +62,6 @@ div, .container {
 .navBar {
     height: auto;
     padding: 50px;
-    max-height: 90vh;
-    overflow: scroll;
     background-color: #FFF;
     border: 3px solid #FFAB9D;
     position: absolute;
@@ -639,6 +637,12 @@ input[type="file"] {
     .ps {
         font-size: 18px;
     }
+    .navBar {
+        height: auto;
+        padding: 50px;
+        max-height: 90vh;
+        overflow: scroll;
+    }
     .outer {
         padding: 3% 5px 5% 10px;
     }
@@ -696,6 +700,7 @@ input[type="file"] {
     .opacity1 {
         opacity: 1;
     }
+    
 }
 @media print {
     * {
