@@ -29,7 +29,8 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary btn-block" style="margin: 0;" @click="changeFullBeats()" > 4/4 拍 </button>
                         <button type="button" class="btn btn-sm btn-secondary btn-block" style="margin: 0;" disabled> 3/4 拍 </button> 
                     </div>
-                    <div v-if="!isMobile">
+                    <!-- v-if="!isMobile" -->
+                    <div>
                         <label for="fileToLoad" class="btn btn-sm btn-outline-secondary btn-block mt-2" v-if="noData">匯入檔案</label>
                         <input id="fileToLoad"  v-if="noData" type="file" @change="read"/>
                         <button type="button" class="btn btn-sm btn-secondary btn-block mt-1" style="margin: 0;" @click="clickDownload" :class="{ disabled : noData }"> 儲存編輯資料 </button>
@@ -133,7 +134,8 @@
         </div> <!-- page 結束 -->
             
              <!-- 編輯器 -->
-             <div class="editing" :class="{ disappear: editClosed }">
+             <!-- <div class="editing" v-if="!editClosed"> -->
+            <div class="editing" :class="{ disappear: editClosed }">
                 <div class="editTitle" v-if="tempDrum.type === 'note'">
                     <div class="closeBtn" @click="cancel"></div>
                     <h3 class="" v-if="isNew">新增標註</h3>
