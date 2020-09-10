@@ -162,6 +162,13 @@ var app = new Vue({
         },
 
     // --------匯出圖片------------------------
+        openImg(){
+            html2canvas(document.querySelector("#page"), {
+                scale:3
+            }).then(canvas => {
+                window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
+            });
+        },
         saveImg(){
             html2canvas(document.querySelector("#page"), {
                 // scale:3
