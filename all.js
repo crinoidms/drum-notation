@@ -549,7 +549,8 @@ var app = new Vue({
             if (r == true) {
                 this.drumList = [];
                 this.isFourBeats = !this.isFourBeats;
-                this.isFourBeats ? this.fullBeats = 16 : this.fullBeats = 12
+                this.isFourBeats ? this.fullBeats = 16 : this.fullBeats = 12 ;
+                this.checkNoData();
             }  
         },
 
