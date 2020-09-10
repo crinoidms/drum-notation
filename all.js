@@ -45,13 +45,13 @@ var app = new Vue({
             },
         ],
         drumList: [
-            {
-                'type': "Djembe",
-                'title': "Djembe 1",
-                'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S'],
-                'preBeat': 'T',
-                'repeat': 3,
-            },
+            // {
+            //     'type': "Djembe",
+            //     'title': "Djembe 1",
+            //     'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S'],
+            //     'preBeat': 'T',
+            //     'repeat': 3,
+            // },
         ],
     },
     methods: {
