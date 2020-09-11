@@ -1,3 +1,5 @@
+Vue.use(VueLoading);
+Vue.component('loading', VueLoading);
 var app = new Vue({
     el: '#app',
     data: {
@@ -27,33 +29,21 @@ var app = new Vue({
         tempDrum: {
             'beat':[],
             'baz': [],
+        }, 
+        drumList: [],
+        isLoading: false,
+        notion: {
+            'type': "note",
+            'title': "網站說明",
+            'note': "本站為非洲鼓鼓譜編輯器，開放給有記譜需求的鼓友們使用。為確保完整功能，請優先使用電腦操作。 iphone / ipad 請使用safari瀏覽器，以保障匯出功能正常。",    
         },
-        // demoDrum: [
-        //     {
-        //         'type': "note",
-        //         'note': "請點選右上方按鈕，開始編輯樂譜。",
-        //         'title': "畫面示意",
-        //     },
-        //     {
-        //         'type': "Djembe",
-        //         'title': "Djembe 1",
-        //         'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S'],
-        //         // 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
-        //         'preBeat': 'T',
-        //         'repeat': 3,
-        //     },
-        // ],
-        drumList: [
-            // {
-            //     'type': "Djembe",
-            //     'title': "Djembe 1",
-            //     'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S'],
-            //     'preBeat': 'T',
-            //     'repeat': 3,
-            // },
-        ],
     },
     methods: {
+        appendAbout() {
+            this.drumList.push(this.notion);
+            this.checkNoData ();
+            this.closeNav();
+        },
         moveUp(index){
             if ( index !== 0 ) {
                 let item = this.drumList[index];
@@ -82,6 +72,13 @@ var app = new Vue({
                     this.drumList.splice(newIndex, 0, this.drumList.splice(index, 1)[0]);
                 }
             }
+        },
+        hideNav(){
+            this.output();
+            var output = document.querySelector('#output')
+            output.style.opacity = 0;
+            setTimeout(( () => this.offOutput() ), 10000);
+            setTimeout(( () => output.style.opacity = 1 ), 10000);
         },
  // ----存檔讀檔-------------
         checkNoData (){
@@ -113,27 +110,8 @@ var app = new Vue({
             }
             fr.readAsText(files.item(0));
 
-        },
-        fake_click(obj) {
-            var ev = document.createEvent("MouseEvents");
-            ev.initMouseEvent(
-                "click", true, false, window, 0, 0, 0, 0, 0
-                , false, false, false, false, 0, null
-            );
-            obj.dispatchEvent(ev);
-        },
-        
+        }, 
         export(name, data) {
-            // var newWindow = window.open();
-            // newWindow.location = save_link.href ;
-            
-
-            // var urlObject = window.URL || window.webkitURL || window;
-            // var export_blob = new Blob([data]);
-            // var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-            // save_link.href = urlObject.createObjectURL(export_blob);
-            // save_link.download = name;
-            // this.fake_click(save_link);
             var urlObject = window.URL || window.webkitURL || window;
             var export_blob = new Blob([data]);
             var save_link = document.createElement("a");
@@ -148,36 +126,6 @@ var app = new Vue({
                 let tempData = JSON.parse(JSON.stringify(this.drumList));
                 tempData.push(info);
                 let data = JSON.stringify(tempData);
-
-                            // var urlObject = window.URL || window.webkitURL || window;
-                            // var export_blob = new Blob([data]);
-                            // var save_link = document.createElement("a");
-                            // save_link.href = urlObject.createObjectURL(export_blob);
-                            // save_link.download = name;
-                            // newWindow.location.href = save_link.href;
-                            // console.log(save_link);
-                            // console.log(save_link.href);
-
-
-
-                            // var reader = new FileReader();
-                            // // var out = new Blob([this.response], {type: 'application/pdf'});
-                            // reader.onload = function(e){
-                                
-                            //     newWindow.location.href = reader.result;
-                            //     console.log(reader.result);
-                            //     // setTimeout(function(){ newWindow.close(); }, 500);
-                            //     // newWindow.close();
-                            // }
-                            // reader.readAsDataURL(export_blob);
-
-                        //     if(stristr($_SERVER['HTTP_USER_AGENT'], 'ipad') OR stristr($_SERVER['HTTP_USER_AGENT'], 'iphone') OR stristr($_SERVER['HTTP_USER_AGENT'], 'ipod')) {
-                        //         header("Content-Type: application/octet-stream");   
-                        //   } else {
-                        //         header('Content-Type: application/vnd.ms-excel');   
-                        //   }
-                            
-
                 this.export(this.title, data);
             } 
             this.closeNav();
@@ -326,9 +274,6 @@ var app = new Vue({
         offEditing() {
             this.titleEditing = false;
             this.editClosed = true;
-            // this.djembeEditClosed = true;
-            // this.dumdumEditClosed = true;
-            // this.noteEditClosed = true;
             this.isEditing = false;
             this.isNew = false;
             this.titleShowing = true;
@@ -621,16 +566,21 @@ var app = new Vue({
         },
         closeOperator() {
             let length = this.drumList.length;
-            if ( length > 0 ) {
-                if ( this.selectedOrder !== "") {
-                    let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
-                    lastOperator[0].classList.remove("active");
-
-                    let outer = lastOperator[0].parentElement ;
-                    outer.classList.remove("red-border");
-                    this.isOperatorOpened = false; 
+            if (this.selectedOrder > length-1 ) {
+                // 資料已被刪除
+                this.selectedOrder ="";
+            } else {
+                if ( length > 0 ) {
+                    if ( this.selectedOrder !== "") {
+                        let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
+                        lastOperator[0].classList.remove("active");
+    
+                        let outer = lastOperator[0].parentElement ;
+                        outer.classList.remove("red-border");
+                        this.isOperatorOpened = false; 
+                    }
                 }
-            }
+            }  
         },
     // ---------刪除---------------
         deleteBeats(drum) {     
@@ -706,7 +656,11 @@ var app = new Vue({
             return mergeBeats.replace(/(.{4})/g, '$1  ');
         },
     },
-    mounted() {
+    created() {
         this.checkDevice();
+        this.isLoading = true;
+    },
+    mounted() {
+        this.isLoading = false;
     }
 })
