@@ -330,7 +330,8 @@
         <div class="outer editing hidden-print disappear" :class="{ active : isOutputing }" style="background-color: #fff; transition: 0s;">
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-dark" @click="offOutput"> 取消 </button>
-                <button type="button" class="btn btn-outline-info ml-5" @click="openImg" v-if="isMobile"> 匯出圖片 </button>
+                <button type="button" class="btn btn-outline-info ml-5" @click="openImg" v-if="isMobile"> 匯出圖片 1 </button>
+                <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="isMobile"> 匯出圖片 2 </button>                
                 <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="!isMobile"> 匯出圖片 </button>                
                 <button type="button" class="btn btn-outline-info ml-2" @click="printPdf"> 匯出PDF </button>
                 <button type="button" class="btn btn-outline-info ml-2" @click="winPrintPdf" v-if="!isMobile"> 列印 </button>

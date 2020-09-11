@@ -307,7 +307,7 @@ input[type="file"] {
     width: 100%;
     position: absolute;
     top: 0;
-    font-family: monospace;
+    font-family: sans-serif;
     font-size: 32px;
     line-height: 30px;
     font-weight: 400;
@@ -549,7 +549,7 @@ input[type="file"] {
     .soundText div{
         font-size: 16px;
         line-height: 16px;
-        top: -2px;
+        /* top: -2px; */
         font-weight: 400;
     }
     .doubleSound div{

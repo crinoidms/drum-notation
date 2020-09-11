@@ -24,26 +24,25 @@ var app = new Vue({
         beatLines: 4,
         tempBeat: "",
         tempBaz: "",
-        tempUploadData: [],
         tempDrum: {
             'beat':[],
             'baz': [],
         },
-        demoDrum: [
-            {
-                'type': "note",
-                'note': "請點選右上方按鈕，開始編輯樂譜。",
-                'title': "畫面示意",
-            },
-            {
-                'type': "Djembe",
-                'title': "Djembe 1",
-                'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S'],
-                // 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
-                'preBeat': 'T',
-                'repeat': 3,
-            },
-        ],
+        // demoDrum: [
+        //     {
+        //         'type': "note",
+        //         'note': "請點選右上方按鈕，開始編輯樂譜。",
+        //         'title': "畫面示意",
+        //     },
+        //     {
+        //         'type': "Djembe",
+        //         'title': "Djembe 1",
+        //         'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S'],
+        //         // 'beat': ['⸆T','-','S','S','❲SS❳','-','TT','T','T','-','S','S','B','-','S','T'],
+        //         'preBeat': 'T',
+        //         'repeat': 3,
+        //     },
+        // ],
         drumList: [
             // {
             //     'type': "Djembe",
@@ -123,13 +122,24 @@ var app = new Vue({
             );
             obj.dispatchEvent(ev);
         },
+        
         export(name, data) {
+            // var newWindow = window.open();
+            // newWindow.location = save_link.href ;
+            
+
+            // var urlObject = window.URL || window.webkitURL || window;
+            // var export_blob = new Blob([data]);
+            // var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+            // save_link.href = urlObject.createObjectURL(export_blob);
+            // save_link.download = name;
+            // this.fake_click(save_link);
             var urlObject = window.URL || window.webkitURL || window;
             var export_blob = new Blob([data]);
-            var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+            var save_link = document.createElement("a");
             save_link.href = urlObject.createObjectURL(export_blob);
             save_link.download = name;
-            this.fake_click(save_link);
+            save_link.click();            
         },
         clickDownload() {
             if ( !this.noData ) {
@@ -138,8 +148,10 @@ var app = new Vue({
                 tempData.push(info);
                 let data = JSON.stringify(tempData);
                 this.export(this.title, data);
-                this.closeNav();
+                // var win = window.open('', '_blank');
+                // (pdfDocGenerator).open({}, win);
             } 
+            this.closeNav();
         },
 // --------匯出----------------
         output() {
@@ -199,6 +211,7 @@ var app = new Vue({
                         }
                     }
                 }
+                window.open(pdf.output('bloburl'), '_blank');
                 pdf.save(this.title+'.pdf');
             });
         },
@@ -214,8 +227,7 @@ var app = new Vue({
                 }).then(canvas => {
                     imageURL = canvas.toDataURL();
                     this.openInNewTab(imageURL, this.title);
-                    page.classList.add('minHeight');
-                    // window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
+                    page.classList.remove('minHeight');
                 });
             } else {
                 html2canvas(page, {
@@ -226,8 +238,7 @@ var app = new Vue({
                     // window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
                 });
             }
-            this.offOutput();
-            
+            this.offOutput();     
         },
         openInNewTab(imageURL, name) {
             console.log('here');
@@ -245,11 +256,22 @@ var app = new Vue({
             a.remove();
         },
         saveImg(){
-            html2canvas(document.querySelector("#page"), {
-                // scale:3
-            }).then(canvas => {
-                this.downloadImg(canvas.toDataURL("image/png", 1));
-            });
+            let page = document.querySelector("#page");
+            if(page.scrollHeight < 500 ) {
+                page.classList.add('minHeight');
+            
+                html2canvas(document.querySelector("#page"), {
+                }).then(canvas => {
+                    this.downloadImg(canvas.toDataURL("image/png", 1));
+                    page.classList.remove('minHeight');
+                });
+            } else {
+                html2canvas(document.querySelector("#page"), {
+                }).then(canvas => {
+                    this.downloadImg(canvas.toDataURL("image/png", 1));
+                });
+
+            }
             this.offOutput();
         },
         downloadImg(url){
