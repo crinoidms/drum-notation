@@ -142,18 +142,18 @@ var app = new Vue({
             save_link.click();            
         },
         clickDownload() {
-            var newWindow = window.open();
+            // var newWindow = window.open();
             if ( !this.noData ) {
                 let info = { fileTitle: this.title, isFourBeats: this.isFourBeats, fileCheck: 'Drum-Notation-1.0'}
                 let tempData = JSON.parse(JSON.stringify(this.drumList));
                 tempData.push(info);
                 let data = JSON.stringify(tempData);
 
-                            var urlObject = window.URL || window.webkitURL || window;
-                            var export_blob = new Blob([data]);
-                            var save_link = document.createElement("a");
-                            save_link.href = urlObject.createObjectURL(export_blob);
-                            save_link.download = name;
+                            // var urlObject = window.URL || window.webkitURL || window;
+                            // var export_blob = new Blob([data]);
+                            // var save_link = document.createElement("a");
+                            // save_link.href = urlObject.createObjectURL(export_blob);
+                            // save_link.download = name;
                             // newWindow.location.href = save_link.href;
                             // console.log(save_link);
                             // console.log(save_link.href);
