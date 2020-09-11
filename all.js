@@ -165,7 +165,7 @@ var app = new Vue({
                             reader.onload = function(e){
                                 // console.log(reader.result);
                                 newWindow.location.href = reader.result;
-                                setTimeout(function(){ newWindow.close(); }, 500);
+                                // setTimeout(function(){ newWindow.close(); }, 500);
                                 // newWindow.close();
                             }
                             reader.readAsDataURL(export_blob);
