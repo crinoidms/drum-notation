@@ -154,24 +154,31 @@ var app = new Vue({
                             var save_link = document.createElement("a");
                             save_link.href = urlObject.createObjectURL(export_blob);
                             save_link.download = name;
-                            // newWindow.location = save_link.href ;
+                            // newWindow.location.href = save_link.href;
                             // console.log(save_link);
                             // console.log(save_link.href);
 
 
 
-                            var reader = new FileReader();
-                            // var out = new Blob([this.response], {type: 'application/pdf'});
-                            reader.onload = function(e){
-                                // console.log(reader.result);
-                                newWindow.location.href = reader.result;
-                                // setTimeout(function(){ newWindow.close(); }, 500);
-                                // newWindow.close();
-                            }
-                            reader.readAsDataURL(export_blob);
+                            // var reader = new FileReader();
+                            // // var out = new Blob([this.response], {type: 'application/pdf'});
+                            // reader.onload = function(e){
+                                
+                            //     newWindow.location.href = reader.result;
+                            //     console.log(reader.result);
+                            //     // setTimeout(function(){ newWindow.close(); }, 500);
+                            //     // newWindow.close();
+                            // }
+                            // reader.readAsDataURL(export_blob);
+
+                        //     if(stristr($_SERVER['HTTP_USER_AGENT'], 'ipad') OR stristr($_SERVER['HTTP_USER_AGENT'], 'iphone') OR stristr($_SERVER['HTTP_USER_AGENT'], 'ipod')) {
+                        //         header("Content-Type: application/octet-stream");   
+                        //   } else {
+                        //         header('Content-Type: application/vnd.ms-excel');   
+                        //   }
                             
 
-                // this.export(this.title, data);
+                this.export(this.title, data);
             } 
             this.closeNav();
         },
