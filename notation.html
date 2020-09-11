@@ -20,18 +20,18 @@
                     <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-3" @click="addBeats('note')"> + 段落說明 </button>
                     <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-3" @click="addBeats('Djembe')"> + Djembe </button>
                     <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-3" @click="addBeats('Dum-Dum')"> + Dum-Dum </button>
-                    <button type="button" class="btn btn-lg btn-outline-info btn-block mt-4" @click="output" :class="{ disappear : noData }"> 完成編輯，匯出 </button>
-                    <div class="d-flex mt-5" v-if="isFourBeats">
+                    <button type="button" class="btn btn-lg btn-outline-info btn-block mt-4 pt-3 pb-3" @click="output" :class="{ disappear : noData }"> 完成編輯，匯出 </button>
+                    <div class="d-flex mt-4" v-if="isFourBeats">
                         <button type="button" class="btn btn-sm btn-secondary btn-block" style="margin: 0;" disabled> 4/4 拍 </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary btn-block" style="margin: 0;" @click="changeFullBeats()"> 3/4 拍 </button>
                     </div>
-                    <div class="d-flex mt-5" v-else>
+                    <div class="d-flex mt-4" v-else>
                         <button type="button" class="btn btn-sm btn-outline-secondary btn-block" style="margin: 0;" @click="changeFullBeats()" > 4/4 拍 </button>
                         <button type="button" class="btn btn-sm btn-secondary btn-block" style="margin: 0;" disabled> 3/4 拍 </button> 
                     </div>
                     <!-- v-if="!isMobile" -->
                     <div>
-                        <label for="fileToLoad" class="btn btn-sm btn-outline-secondary btn-block mt-2" v-if="noData">匯入檔案</label>
+                        <label for="fileToLoad" class="btn btn-sm btn-outline-secondary btn-block mt-2" v-if="noData">匯入編輯資料</label>
                         <input id="fileToLoad"  v-if="noData" type="file" @change="read"/>
                         <button type="button" class="btn btn-sm btn-secondary btn-block mt-1" style="margin: 0;" @click="clickDownload" :class="{ disabled : noData }"> 儲存編輯資料 </button>
                     </div>
@@ -327,15 +327,16 @@
             </div>
 
 
-        <div class="outer editing hidden-print disappear" :class="{ active : isOutputing }" style="transition: 0s;">
+        <div class="outer editing hidden-print disappear" :class="{ active : isOutputing }" style="background-color: #fff; transition: 0s;">
             <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-outline-dark" @click="offOutput"> 取消匯出 </button>
-                <button type="button" class="btn btn-outline-info ml-5" @click="openImg"> 匯出圖片 </button>
-                <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="!isMobile"> 匯出圖片並下載 </button>
-                <button type="button" class="btn btn-outline-info ml-2" @click="printPdf" v-if="!isMobile"> 匯出PDF </button>
+                <button type="button" class="btn btn-outline-dark" @click="offOutput"> 取消 </button>
+                <button type="button" class="btn btn-outline-info ml-5" @click="openImg" v-if="isMobile"> 匯出圖片 </button>
+                <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="!isMobile"> 匯出圖片 </button>                
+                <button type="button" class="btn btn-outline-info ml-2" @click="printPdf"> 匯出PDF </button>
+                <button type="button" class="btn btn-outline-info ml-2" @click="winPrintPdf" v-if="!isMobile"> 列印 </button>
             </div>
             <div class="d-flex justify-content-center mt-2" v-if="!isMobile">
-                <small>欲匯出PDF，請點選按鈕後，在列印視窗的「目的地」選擇「另存成PDF」</small>
+                <small>欲匯出保留文字的PDF，請點選列印後，在列印視窗的「目的地」選擇「另存成PDF」</small>
             </div>
         </div>
     </div>
@@ -347,7 +348,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3"></script>
     <link href="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3/dist/vue-loading.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script> 
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.0.0/polyfills.umd.js"></script>
     <script src="all.js"></script>
 </body>
 </html>

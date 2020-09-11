@@ -142,32 +142,107 @@ var app = new Vue({
             } 
         },
 // --------匯出----------------
-        // clickSave(){
-        //     this.offEditing();
-        //     this.closeOperator();
-        //     this.isSaving = true;
-        //     this.isEditing = true;
-        // },        
-
         output() {
             this.offEditing();
             this.closeOperator();
             this.isOutputing = true;
             this.isEditing = true;
         },
-        printPdf() {
+        winPrintPdf() {
+            document.title = this.title;
             window.print();
             this.isEditing = false;
             this.isOutputing = false;
+            this.offOutput();
+        },
+        printPdf() {
+            this.isEditing = false;
+            this.isOutputing = false;
+            this.offOutput();
+
+            let page = document.querySelector("#page");
+            html2canvas(page, {
+                scale:3,
+                height: page.scrollHeight,//
+                width: page.scrollWidth,//為了使橫向滾動條的內容全部展示，這裡必須指定
+                background: "#FFFFFF",
+            }).then(canvas => {
+
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+
+                //一頁pdf顯示html頁面生成的canvas高度;
+                var pageHeight = contentWidth / 595.28 * 841.89;
+                //未生成pdf的html頁面高度
+                var leftHeight = contentHeight;
+                //pdf頁面偏移
+                var position = 0;
+                //a4紙的尺寸[595.28,841.89]，html頁面生成的canvas在pdf中圖片的寬高
+                var imgWidth = 555.28;
+                var imgHeight = 555.28/contentWidth * contentHeight;
+
+                var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+                var pdf = new jsPDF('', 'pt', 'a4');
+                //有兩個高度需要區分，一個是html頁面的實際高度，和生成pdf的頁面高度(841.89)
+                //當內容未超過pdf一頁顯示的範圍，無需分頁
+                if (leftHeight < pageHeight) {
+                    pdf.addImage(pageData, 'JPEG', 20, 0, imgWidth, imgHeight );
+                } else {
+                    while(leftHeight > 0) {
+                        pdf.addImage(pageData, 'JPEG', 20, position, imgWidth, imgHeight)
+                        leftHeight -= pageHeight;
+                        position -= 841.89;
+                        //避免新增空白頁
+                        if(leftHeight > 0) {
+                            pdf.addPage();
+                        }
+                    }
+                }
+                pdf.save(this.title+'.pdf');
+            });
         },
 
     // --------匯出圖片------------------------
         openImg(){
-            html2canvas(document.querySelector("#page"), {
-                scale:3
-            }).then(canvas => {
-                window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
-            });
+            let page = document.querySelector("#page");
+            if(page.scrollHeight < 500 ) {
+                page.classList.add('minHeight');
+
+                html2canvas(page, {
+                    scale:3
+                }).then(canvas => {
+                    imageURL = canvas.toDataURL();
+                    this.openInNewTab(imageURL, this.title);
+                    page.classList.add('minHeight');
+                    // window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
+                });
+            } else {
+                html2canvas(page, {
+                    scale:3
+                }).then(canvas => {
+                    imageURL = canvas.toDataURL();
+                    this.openInNewTab(imageURL, this.title);
+                    // window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
+                });
+            }
+            this.offOutput();
+            
+        },
+        openInNewTab(imageURL, name) {
+            console.log('here');
+            var img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.id = "getshot";
+            img.src = imageURL;
+            document.body.appendChild(img);
+
+            var a = document.createElement("a");
+            a.href = getshot.src;
+            a.download = name +".png";
+            a.click();
+            document.body.removeChild(img);
+            a.remove();
         },
         saveImg(){
             html2canvas(document.querySelector("#page"), {
@@ -175,6 +250,7 @@ var app = new Vue({
             }).then(canvas => {
                 this.downloadImg(canvas.toDataURL("image/png", 1));
             });
+            this.offOutput();
         },
         downloadImg(url){
             var a = $("<a style='display:none' id='js-downloader'>")
