@@ -149,26 +149,26 @@ var app = new Vue({
                 tempData.push(info);
                 let data = JSON.stringify(tempData);
 
-                var urlObject = window.URL || window.webkitURL || window;
-                var export_blob = new Blob([data]);
-                var save_link = document.createElement("a");
-                save_link.href = urlObject.createObjectURL(export_blob);
-                save_link.download = name;
-                // newWindow.location = save_link.href ;
-                // console.log(save_link);
-                // console.log(save_link.href);
+                            // var urlObject = window.URL || window.webkitURL || window;
+                            // var export_blob = new Blob([data]);
+                            // var save_link = document.createElement("a");
+                            // save_link.href = urlObject.createObjectURL(export_blob);
+                            // save_link.download = name;
+                            // // newWindow.location = save_link.href ;
+                            // // console.log(save_link);
+                            // // console.log(save_link.href);
 
 
 
-                var reader = new FileReader();
-                // var out = new Blob([this.response], {type: 'application/pdf'});
-                reader.onload = function(e){
-                    // console.log(reader.result);
-                    window.location.href = reader.result;
-                }
-                reader.readAsDataURL(export_blob);
+                            // var reader = new FileReader();
+                            // // var out = new Blob([this.response], {type: 'application/pdf'});
+                            // reader.onload = function(e){
+                            //     // console.log(reader.result);
+                            //     window.location.href = reader.result;
+                            // }
+                            // reader.readAsDataURL(export_blob);
 
-                // this.export(this.title, data);
+                this.export(this.title, data);
                 // var win = window.open('', '_blank');
                 // (pdfDocGenerator).open({}, win);
             } 
