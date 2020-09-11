@@ -77,8 +77,8 @@ var app = new Vue({
             this.output();
             var output = document.querySelector('#output')
             output.style.opacity = 0;
-            setTimeout(( () => this.offOutput() ), 10000);
-            setTimeout(( () => output.style.opacity = 1 ), 10000);
+            setTimeout(( () => this.offOutput() ), 3000);
+            setTimeout(( () => output.style.opacity = 1 ), 3000);
         },
  // ----存檔讀檔-------------
         checkNoData (){
@@ -194,24 +194,35 @@ var app = new Vue({
         },
 
     // --------匯出圖片------------------------
+        closeOutputModal(){
+            document.querySelector("#outputImg").innerHTML="";
+            $('#outputModal').modal('hide');
+        },
         openImg(){
+            // $('#editModal').modal('show');
+            let show = document.querySelector("#outputImg");
             let page = document.querySelector("#page");
+
             if(page.scrollHeight < 500 ) {
                 page.classList.add('minHeight');
 
                 html2canvas(page, {
                     scale:3
                 }).then(canvas => {
-                    imageURL = canvas.toDataURL();
-                    this.openInNewTab(imageURL, this.title);
+                    show.innerHTML = '<img src="' + canvas.toDataURL() + '" />' ;
+                    $('#outputModal').modal('show');
+                    // imageURL = canvas.toDataURL();
+                    // this.openInNewTab(imageURL, this.title);
                     page.classList.remove('minHeight');
                 });
             } else {
                 html2canvas(page, {
                     scale:3
                 }).then(canvas => {
-                    imageURL = canvas.toDataURL();
-                    this.openInNewTab(imageURL, this.title);
+                    show.innerHTML = '<img src="' + canvas.toDataURL() + '" />' ;
+                    $('#outputModal').modal('show');
+                    // imageURL = canvas.toDataURL();
+                    // this.openInNewTab(imageURL, this.title);
                     // window.open().document.write('<img src="' + canvas.toDataURL() + '" />');
                 });
             }

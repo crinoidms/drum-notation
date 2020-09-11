@@ -12,6 +12,10 @@ body button, label.btn{
 div, .container {
     padding: 0;
 }
+#outputImg img {
+    max-width: 100%;
+    max-height: 100%;
+}
 
 /* ---- Nav Bar ---------*/
 .nav {
