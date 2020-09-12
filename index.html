@@ -38,7 +38,7 @@
                     <div>
                         <label for="fileToLoad" class="btn btn-sm btn-outline-secondary btn-block mt-2" v-if="noData">匯入編輯資料</label>
                         <input id="fileToLoad"  v-if="noData" type="file" @change="read"/>
-                        <button type="button" class="btn btn-sm btn-secondary btn-block mt-1" style="margin: 0;" @click="clickDownload" :class="{ disabled : noData }"> 儲存編輯資料 </button>
+                        <button type="button" class="btn btn-sm btn-secondary btn-block mt-1" style="margin: 0;" @click="clickDownload" v-if="!noData"> 儲存編輯資料 </button>
                     </div>
                 </div>              
             </div>
@@ -337,11 +337,11 @@
                 <button type="button" class="btn btn-outline-dark" @click="offOutput"> 取消 </button>
                 <button type="button" class="btn btn-outline-info ml-5" @click="openImg" v-if="isMobile"> 匯出圖片 </button>               
                 <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="!isMobile"> 匯出圖片 </button>                
-                <button type="button" class="btn btn-outline-info ml-2" @click="printPdf" v-if="!isMobile"> 匯出PDF </button>
-                <button type="button" class="btn btn-outline-info ml-2" @click="winPrintPdf" v-if="!isMobile"> 列印 </button>
+                <!-- <button type="button" class="btn btn-outline-info ml-2" @click="printPdf" v-if="!isMobile"> 匯出PDF </button> -->
+                <button type="button" class="btn btn-outline-info ml-2" @click="winPrintPdf" v-if="!isMobile"> 匯出PDF </button>
             </div>
             <div class="d-flex justify-content-center mt-2" v-if="!isMobile">
-                <small>欲匯出保留文字的PDF，請點選列印後，在列印視窗的「目的地」選擇「另存成PDF」</small>
+                <small>欲匯出PDF，請在列印視窗的「目的地」選擇「另存成PDF」</small>
             </div>
         </div>
     </div>
