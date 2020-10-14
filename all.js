@@ -245,21 +245,26 @@ var app = new Vue({
         },
         saveImg(){
             let page = document.querySelector("#page");
-            if(page.scrollHeight < 500 ) {
-                page.classList.add('minHeight');
-            
-                html2canvas(document.querySelector("#page"), {
-                }).then(canvas => {
-                    this.downloadImg(canvas.toDataURL("image/png", 1));
-                    page.classList.remove('minHeight');
-                });
-            } else {
-                html2canvas(document.querySelector("#page"), {
-                }).then(canvas => {
-                    this.downloadImg(canvas.toDataURL("image/png", 1));
-                });
+            html2canvas(document.querySelector("#page"), {
+            }).then(canvas => {
+                this.downloadImg(canvas.toDataURL("image/png", 1));
+            });
 
-            }
+            // if(page.scrollHeight < 500 ) {
+            //     page.classList.add('minHeight');
+            
+            //     html2canvas(document.querySelector("#page"), {
+            //     }).then(canvas => {
+            //         this.downloadImg(canvas.toDataURL("image/png", 1));
+            //         page.classList.remove('minHeight');
+            //     });
+            // } else {
+            //     html2canvas(document.querySelector("#page"), {
+            //     }).then(canvas => {
+            //         this.downloadImg(canvas.toDataURL("image/png", 1));
+            //     });
+
+            // }
             this.offOutput();
         },
         downloadImg(url){
