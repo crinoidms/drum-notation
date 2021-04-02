@@ -77,6 +77,9 @@ div, .container {
     transition: 0.5s;
     opacity: 1;
 }
+.navBar-green {
+    border: 3px solid #CEEBB7;
+}
 /* ---- close Btn ---------*/
 .closeBtn {
     width: 30px;
@@ -94,6 +97,7 @@ div, .container {
     top: 10px;
     right: 12px;
 }
+
 .closeBtn:hover {
     transform: scale(1.2, 1.2);
     background-color: #000;
@@ -106,6 +110,13 @@ div, .container {
     height: 20px;
     width: 2px;
     background-color: #FFAB9D;
+}
+.closeBtn-green {
+    border: 2px solid #CEEBB7;
+    color: #CEEBB7;
+}
+.closeBtn-green:before, .closeBtn-green:after {
+    background-color: #CEEBB7;
 }
 .closeBtn:before {
     transform: rotate(45deg);
@@ -224,8 +235,8 @@ div, .container {
     padding: 0 15px;
     border-bottom: 2px solid #aaa;
     font-family: Arial, Helvetica, sans-serif;
-    /* font-size: 28px; */
-    font-size: 32px;
+    font-size: 28px;
+    /* font-size: 32px; */
     font-weight: 600;
 }
 
@@ -459,13 +470,17 @@ input[type="file"] {
     width: 100%;
     margin-top: 15px;
 }
-
-
 .red-border {
     border: 1px solid #fc8671;
 }
 .red-border:hover {
     border: 1px solid #fc8671;
+}
+.border-green {
+    border: 1px solid #A1E3A3;
+}
+.border-green:hover {
+    border: 1px solid #A1E3A3;
 }
 .display {
     display: none;

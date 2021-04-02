@@ -19,7 +19,7 @@ var app = new Vue({
         addPre: false,
         addRepeat: false,
         nextCannotBeEffect: false,
-        title: "Djembe 鼓譜",
+        title: "",
         isFourBeats: true,
         tempTitle: "",
         fullBeats: 16,
