@@ -16,7 +16,7 @@
         .block {
             background-color: #FFF;
             width: 6vh;
-            height: 4.5vh;
+            height: 4vh;
             font-size: 32px;
             text-align: center;
         }
@@ -33,16 +33,13 @@
         .m-1px {
             margin: 1px;
         }
-        .m-1px {
-            margin: 2px;
-        }
         .count {
             background-color: #FFF;
-            height: calc(18vh + 13px);
-            line-height: 18vh;
-            margin: 3px 0;
+            height: calc(16vh + 6px);
+            line-height: 16vh;
+            margin: 2px 0;
             width: 24px;
-            font-size: 32px;
+            font-size: 20px;
             text-align: center;
             color: #bbb;
         }
@@ -97,17 +94,17 @@
             <div class="d-flex justify-content-center" style="margin-top: -20px;">
                 <div class="four-beats mx-2 mx-lg-5" style="position: relative;" v-for="(item, index) in dumdumList" @click="clickDumBeat(index)">
                     <div class="d-flex bg-white">
-                        <div class="ml-4 m-2px"></div>
+                        <div class="ml-4"></div>
                         <div class="block-name m-1px">K</div>
                         <div class="block-name m-1px">D</div>
                         <div class="block-name m-1px">S</div>
                     </div>
                     <div class="d-flex one-beat border">
                         <div>
-                            <div class="m-1px count">1</div>
-                            <div class="m-1px count">2</div>
-                            <div class="m-1px count">3</div>
-                            <div class="m-1px count">4</div>
+                            <div class="count">1</div>
+                            <div class="count">2</div>
+                            <div class="count">3</div>
+                            <div class="count">4</div>
                         </div>
                         <div>
                             <div class="d-flex dumBeat" v-for="i in item">
