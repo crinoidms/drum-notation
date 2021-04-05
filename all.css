@@ -16,7 +16,12 @@ div, .container {
     max-width: 100%;
     max-height: 100%;
 }
-
+.cursor-pointer{
+    cursor: pointer;
+}
+.hover-green-border:hover {
+    border: 1px solid #CEEBB7;
+}
 /* ---- Nav Bar ---------*/
 .nav {
     width: 100vw;
@@ -50,6 +55,12 @@ div, .container {
     transform: scale(1.2, 1.2);
     background-color: #fc8671;
     box-shadow: 0 2px #ccc;
+}
+.navBtn-green {
+    background-color: #CEEBB7;
+}
+.navBtn-green:hover {
+    background-color: #A1E3A3;
 }
 .navBtn:before, .navBtn:after {
     position: absolute;
@@ -112,8 +123,8 @@ div, .container {
     background-color: #FFAB9D;
 }
 .closeBtn-green {
-    border: 2px solid #CEEBB7;
-    color: #CEEBB7;
+    border: 2px solid #A1E3A3;
+    color: #A1E3A3;
 }
 .closeBtn-green:before, .closeBtn-green:after {
     background-color: #CEEBB7;
@@ -199,6 +210,9 @@ div, .container {
     background-color: #FFAB9D;
     padding: 10px 0 5px 3%;
 }
+.editTitle-green {
+    background-color: #A1E3A3;
+}
 /* .editTitle .closeBtn {
     border: 2px solid #FFF;
 } */
@@ -215,6 +229,10 @@ div, .container {
     background-color: #FFF;
     border: 3px solid #FFAB9D;
     box-sizing: border-box;
+    max-height: 95vh;
+}
+.editInner-green {
+    border: 3px solid #A1E3A3;
 }
 .editInner small {
     color: #555;
@@ -626,7 +644,7 @@ input[type="file"] {
         top: 0;
     }
     .editing {
-        max-height: 85vh;
+        max-height: 90vh;
         overflow: scroll;
     }
     .disappear {

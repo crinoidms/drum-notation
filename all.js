@@ -30,7 +30,9 @@ var app = new Vue({
             'beat':[],
             'baz': [],
         }, 
+        tempDum: [ ['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''] ],
         drumList: [],
+        dumdumList: [],
         isLoading: false,
         notion: {
             'type': "note",
@@ -82,7 +84,7 @@ var app = new Vue({
         },
  // ----存檔讀檔-------------
         checkNoData (){
-            this.drumList.length < 1 ? this.noData=true : this.noData=false;
+            this.drumList.length < 1 && this.dumdumList.length < 1  ? this.noData=true : this.noData=false;
         },
         checkLoad(data) {
             var check = data.pop();
@@ -229,7 +231,6 @@ var app = new Vue({
             this.offOutput();     
         },
         openInNewTab(imageURL, name) {
-            console.log('here');
             var img = new Image();
             img.crossOrigin = "Anonymous";
             img.id = "getshot";
@@ -303,6 +304,9 @@ var app = new Vue({
             this.addRepeat = false;
             delete this.tempDrum.repeatWithPre;
         },
+        resetTempDum() {
+            this.tempDum = [ ['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''],['','',''] ];
+        },
         offOutput(){
             this.isOutputing = false;
             this.isEditing = false;
@@ -340,6 +344,14 @@ var app = new Vue({
             this.isNew = true;
             this.editClosed = false;
         },
+        addDumBeats() {
+            this.resetTempDum();
+            this.isEditing = true;
+            this.isNavClose = true;
+            this.closeDumOperator();
+            this.isNew = true;
+            this.editClosed = false;
+        },
         editBeats(drum) {
             if ( !this.isEditing) {
                 // 確定下段是否已有repeat
@@ -358,7 +370,24 @@ var app = new Vue({
                 this.containsKey(this.tempDrum, 'preBeat') ? this.addPre=true : this.addPre=false;
                 var type = this.tempDrum.type;
                 this.editClosed = false; 
-                console.log(this.tempDrum);
+            }
+        },
+        editDumBeats(drum) {
+            this.isEditing = true;
+            this.isNavClose = true;
+            this.closeDumOperator();
+            this.showSelectedOuter();
+            this.tempDum = JSON.parse(JSON.stringify(this.dumdumList[drum]));
+            this.editClosed = false; 
+        },
+        editDum(i, s) {
+            var editingItem = this.tempDum[i];
+            if ( editingItem[s] ==='' ) {
+                editingItem.splice(s, 1, '○');
+            } else if ( editingItem[s] ==='○' ) {
+                editingItem.splice(s, 1, '△');
+            } else if ( editingItem[s] ==='△' ) {
+                editingItem.splice(s, 1, '');
             }
         },
     // ------input 輸入與刪除功能按鈕------------------------- 
@@ -472,7 +501,9 @@ var app = new Vue({
         cancel() {
             this.offEditing();
             this.resetTempDrum();
+            this.resetTempDum();
             this.removeSelectedOuter();
+            this.removeSelectedDumOuter();
         },
         submitNewTitle() {
             this.title = this.tempTitle;
@@ -494,6 +525,13 @@ var app = new Vue({
                 // this.noData = false;
                 this.scrollToBottom ();
             }
+        },
+        submitNewDum() {
+            this.offEditing();
+            this.removeSelectedOuter();
+            this.dumdumList.push(this.tempDum);
+            this.resetTempDum();
+            this.checkNoData ();
         },
         submitPatch() {
             // 未檢查空資料
@@ -519,13 +557,32 @@ var app = new Vue({
             this.drumList.splice(order, 1 , this.tempDrum);
             this.resetTempDrum();
         },
-        
-
-
+        submitPatchDum() {
+            // 未檢查空資料
+            this.offEditing();
+            this.removeSelectedDumOuter();
+            let order = this.selectedOrder;
+            let length = this.dumdumList.length;
+            let isFinalItem = order === length-1 ? true : false;
+            this.dumdumList.splice(order, 1 , this.tempDum);
+            this.resetTempDum();
+        },
     // ------小節focus---------------------- 
 
         toggleOperator(drum) {
             let length = this.drumList.length;
+            if (  length > 0 && drum <= length-1 ) {
+                let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
+                lastOperator[0].classList.toggle("active");
+                let outer = lastOperator[0].parentElement ;
+                outer.classList.toggle("red-border");
+                this.isOperatorOpened = !this.isOperatorOpened ;
+                
+            };
+        },
+        toggleDumOperator(drum) {
+            console.log('toggle');
+            let length = this.dumdumList.length;
             if (  length > 0 && drum <= length-1 ) {
                 let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
                 lastOperator[0].classList.toggle("active");
@@ -555,6 +612,26 @@ var app = new Vue({
             }
             
         },
+        clickDumBeat(drum) {
+            let length = this.dumdumList.length;
+            if (this.selectedOrder > length-1 ) {
+                // 資料已被刪除
+                this.selectedOrder ="";
+            } else {
+                if ( !this.isEditing && length > 0 ) {
+                    if ( this.selectedOrder === "") {
+                        this.openOperator(drum);                         
+                    } else if( drum !== this.selectedOrder) {
+                        this.closeDumOperator();
+                        this.openOperator(drum);
+                    } else {
+                        this.justDeletedOrder = false;
+                        this.toggleDumOperator(drum);
+                    }
+                }   
+            }
+            
+        },
         showSelectedOuter() {
             if ( this.selectedOrder !== "" ) {
                 let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
@@ -572,7 +649,16 @@ var app = new Vue({
                 }
             }
         },
-
+        removeSelectedDumOuter() {
+            let length = this.dumdumList.length;
+            if ( length > 0 ) {
+                if ( this.selectedOrder !== "" ) {
+                    let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
+                    let outer = lastOperator[0].parentElement ;
+                    outer.classList.remove("red-border");
+                }
+            }
+        },
         openOperator(drum) {
             this.selectedOrder = drum;
             let operator = this.$refs['drumBeat'+drum];
@@ -590,10 +676,26 @@ var app = new Vue({
                     if ( this.selectedOrder !== "") {
                         let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
                         lastOperator[0].classList.remove("active");
-    
                         let outer = lastOperator[0].parentElement ;
                         outer.classList.remove("red-border");
                         this.isOperatorOpened = false; 
+                    }
+                }
+            }  
+        },
+        closeDumOperator() {
+            let length = this.dumdumList.length;
+            if (this.selectedOrder !== "" && this.selectedOrder > length-1 ) {
+                // 資料已被刪除
+                this.selectedOrder ="";
+            } else {
+                if ( length > 0 ) {
+                    if ( this.selectedOrder !== "") {
+                        let lastOperator = this.$refs['drumBeat'+this.selectedOrder];
+                        lastOperator[0].classList.remove("active");
+                        let outer = lastOperator[0].parentElement ;
+                        outer.classList.remove("red-border");
+                        this.isOperatorOpened = false;    
                     }
                 }
             }  
@@ -613,6 +715,19 @@ var app = new Vue({
                     // this.drumList.length < 1 ? this.noData = true : this.noData = false;
                     this.checkNoData ();
                 }
+            }
+            // v-if="!item.repeatWithNext && !item.repeatWithPre"
+        },
+        deleteDumBeats(drum) {     
+            let operator = this.$refs['drumBeat'+drum];
+            let item = this.dumdumList[drum];
+            var r = confirm("確定刪除這段嗎？");
+            if (r == true) {
+                this.dumdumList.splice(drum, 1 ); 
+                this.isOperatorOpened = false; 
+                this.justDeletedOrder = true;
+                // this.drumList.length < 1 ? this.noData = true : this.noData = false;
+                this.checkNoData ();
             }
             // v-if="!item.repeatWithNext && !item.repeatWithPre"
         },
