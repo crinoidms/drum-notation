@@ -383,10 +383,12 @@ var app = new Vue({
         editDum(i, s) {
             var editingItem = this.tempDum[i];
             if ( editingItem[s] ==='' ) {
-                editingItem.splice(s, 1, '○');
-            } else if ( editingItem[s] ==='○' ) {
+                editingItem.splice(s, 1, '●');
+            } else if ( editingItem[s] ==='●' ) {
                 editingItem.splice(s, 1, '△');
             } else if ( editingItem[s] ==='△' ) {
+                editingItem.splice(s, 1, '☆');
+            } else if ( editingItem[s] ==='☆' ) {
                 editingItem.splice(s, 1, '');
             }
         },
