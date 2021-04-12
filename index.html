@@ -110,7 +110,7 @@
                             <div class="onePre soundText" v-if="item.preBeat"><div>{{ item.preBeat==='-' ? '&ensp;' : item.preBeat}}</div></div>
                             <div class="onePre soundText" v-else><div>&ensp;</div></div>
                             <div class="soundText" v-for="i in item.beat" :class="{ doubleSound : i==='❲SS❳' }">
-                                <div :class="{ rollSound : i==='TT' }">{{ i==='-' ? '&ensp;' : i }}</div>
+                                <div  :class="[i==='TT'||'SS'?'rollSound':'']">{{ i==='-' ? '&ensp;' : i }}</div>
                             </div>
                         </div>
                         <div class="sound symbol d-flex" v-if="item.type === 'Dum-Dum'" :class="{ triBeat : !isFourBeats }">
@@ -278,6 +278,7 @@
                                         <div class="d-flex pt-2">
                                             <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="insertBeat('ᵀT')">ᵀT</button>
                                             <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="insertBeat('TT')">TT</button>
+                                            <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="insertBeat('SS')">SS</button>
                                             <button type="button" class="btn btn-sm btn-outline-dark mr-2" @click="insertBeat('❲SS❳')">❲SS❳</button>
                                         </div>
                                         <div class="d-flex pt-2">

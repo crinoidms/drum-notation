@@ -597,7 +597,7 @@ input[type="file"] {
     }
     .rollSound {
         margin-left: 10%;
-        letter-spacing: 0;
+        letter-spacing: -1px;
     }
     .roundSound div {
         font-size: 14px;
