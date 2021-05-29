@@ -269,14 +269,14 @@ div, .container {
     background-color: black;
     color: white;
     font-family: sans-serif;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 800;
     margin: 0;
     line-height: 32px;
     text-align: center;
 }
 .ps {
-    font-size: 18px;
+    font-size: 24px;
     margin-bottom: 8px;
     margin-left: 20px;
 }
@@ -558,12 +558,13 @@ input[type="file"] {
         max-width: 200vw;
     }
     .note{
-        font-size: 12px;
+        font-size: 18px;
+        font-weight: 800;
         padding: 1px 10px;
         margin: 0;
     }
     .ps {
-        font-size: 16px;
+        font-size: 22px;
         margin: 0;
     }
     .demoWarning {
