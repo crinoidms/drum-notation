@@ -17,6 +17,10 @@ div, .container {
     max-height: 100%;
 }
 
+#app {
+    display: none;
+}
+
 /* ---- Nav Bar ---------*/
 .nav {
     width: 100vw;

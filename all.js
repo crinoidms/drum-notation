@@ -654,6 +654,17 @@ var app = new Vue({
             }  
         },
 
+        clearDrumList() {
+            var r = confirm("※注意 是否清空所有資料？");
+            this.closeNav();
+            if (r == true) {
+                this.drumList = [];
+                this.title = "Djembe 鼓譜";
+                this.isFourBeats = true,
+                this.checkNoData();
+            }  
+        },
+
     // -----棄用------------------------- 
         showBeat() {
             var beat = this.tempDrum.beat;
@@ -672,11 +683,35 @@ var app = new Vue({
             return mergeBeats.replace(/(.{4})/g, '$1  ');
         },
     },
+    watch: {
+        // 監聽陣列變化，將新的陣列內容儲存到 LocalStorage
+        drumList: {
+            handler(newArr) {
+                localStorage.setItem('drumList', JSON.stringify(newArr));
+                localStorage.setItem('fileTitle', JSON.stringify(this.title));
+                localStorage.setItem('isFourBeats', JSON.stringify(this.isFourBeats));
+            },
+            deep: true
+        }
+    },
     created() {
         this.checkDevice();
         this.isLoading = true;
     },
     mounted() {
-        this.isLoading = false;
+        // 頁面載入時，將 LocalStorage 中的資料還原到 Vue 的資料陣列
+        const savedArr = localStorage.getItem('drumList');
+        const fileTitle = localStorage.getItem('fileTitle');
+        const isFourBeats = localStorage.getItem('isFourBeats');
+        if (savedArr) {
+            this.drumList = JSON.parse(savedArr);
+            this.title = JSON.parse(fileTitle);
+            this.isFourBeats = JSON.parse(isFourBeats);
+        }
+        this.checkNoData();
+        // 延遲兩秒後，將 loaded 設為 true，這將切換到顯示頁面內容
+        setTimeout(() => {
+            document.getElementById('app').style.display = 'block';
+        }, 500);
     }
 })
