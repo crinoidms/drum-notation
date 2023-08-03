@@ -21,6 +21,12 @@ div, .container {
     display: none;
 }
 
+.cursor-pointer{
+    cursor: pointer;
+}
+.hover-green-border:hover {
+    border: 1px solid #CEEBB7;
+}
 /* ---- Nav Bar ---------*/
 .nav {
     width: 100vw;
@@ -55,6 +61,12 @@ div, .container {
     background-color: #fc8671;
     box-shadow: 0 2px #ccc;
 }
+.navBtn-green {
+    background-color: #CEEBB7;
+}
+.navBtn-green:hover {
+    background-color: #A1E3A3;
+}
 .navBtn:before, .navBtn:after {
     position: absolute;
     left: 38px;
@@ -81,6 +93,9 @@ div, .container {
     transition: 0.5s;
     opacity: 1;
 }
+.navBar-green {
+    border: 3px solid #CEEBB7;
+}
 /* ---- close Btn ---------*/
 .closeBtn {
     width: 30px;
@@ -98,6 +113,7 @@ div, .container {
     top: 10px;
     right: 12px;
 }
+
 .closeBtn:hover {
     transform: scale(1.2, 1.2);
     background-color: #000;
@@ -110,6 +126,13 @@ div, .container {
     height: 20px;
     width: 2px;
     background-color: #FFAB9D;
+}
+.closeBtn-green {
+    border: 2px solid #A1E3A3;
+    color: #A1E3A3;
+}
+.closeBtn-green:before, .closeBtn-green:after {
+    background-color: #CEEBB7;
 }
 .closeBtn:before {
     transform: rotate(45deg);
@@ -192,6 +215,9 @@ div, .container {
     background-color: #FFAB9D;
     padding: 10px 0 5px 3%;
 }
+.editTitle-green {
+    background-color: #A1E3A3;
+}
 /* .editTitle .closeBtn {
     border: 2px solid #FFF;
 } */
@@ -208,6 +234,10 @@ div, .container {
     background-color: #FFF;
     border: 3px solid #FFAB9D;
     box-sizing: border-box;
+    max-height: 95vh;
+}
+.editInner-green {
+    border: 3px solid #A1E3A3;
 }
 .editInner small {
     color: #555;
@@ -228,8 +258,8 @@ div, .container {
     padding: 0 15px;
     border-bottom: 2px solid #aaa;
     font-family: Arial, Helvetica, sans-serif;
-    /* font-size: 28px; */
-    font-size: 32px;
+    font-size: 28px;
+    /* font-size: 32px; */
     font-weight: 600;
 }
 
@@ -244,14 +274,14 @@ div, .container {
     background-color: black;
     color: white;
     font-family: sans-serif;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 800;
     margin: 0;
     line-height: 32px;
     text-align: center;
 }
 .ps {
-    font-size: 18px;
+    font-size: 24px;
     margin-bottom: 8px;
     margin-left: 20px;
 }
@@ -327,7 +357,7 @@ input[type="file"] {
 }
 .rollSound {
     margin-left: 25%;
-    letter-spacing: 2px;
+    letter-spacing: 0.5px;
 }
 
 /*  Dum-Dum  */
@@ -463,13 +493,17 @@ input[type="file"] {
     width: 100%;
     margin-top: 15px;
 }
-
-
 .red-border {
     border: 1px solid #fc8671;
 }
 .red-border:hover {
     border: 1px solid #fc8671;
+}
+.border-green {
+    border: 1px solid #A1E3A3;
+}
+.border-green:hover {
+    border: 1px solid #A1E3A3;
 }
 .display {
     display: none;
@@ -529,12 +563,13 @@ input[type="file"] {
         max-width: 200vw;
     }
     .note{
-        font-size: 12px;
+        font-size: 16px;
+        font-weight: 500;
         padding: 1px 10px;
         margin: 0;
     }
     .ps {
-        font-size: 16px;
+        font-size: 20px;
         margin: 0;
     }
     .demoWarning {
@@ -568,7 +603,7 @@ input[type="file"] {
     }
     .rollSound {
         margin-left: 10%;
-        letter-spacing: 0;
+        letter-spacing: -1px;
     }
     .roundSound div {
         font-size: 14px;
@@ -615,7 +650,7 @@ input[type="file"] {
         top: 0;
     }
     .editing {
-        max-height: 85vh;
+        max-height: 90vh;
         overflow: scroll;
     }
     .disappear {

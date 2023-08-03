@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dumdum Notation</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="all.css">
+    <style>
+        .four-beats {
+            display: inline;
+            background-color: #eee;
+        }
+        .block {
+            background-color: #FFF;
+            width: 6vh;
+            height: 4vh;
+            font-size: 32px;
+            line-height: 4vh;
+            text-align: center;
+        }
+        .dumBeat:nth-child(4n) {
+           box-shadow: 0 2px 0 0 #ccc;
+        }
+        .block-name {
+            background-color: #FFF;
+            width: 6vh;
+            font-size: 18px;
+            text-align: center;
+            color: #bbb;
+        }
+        .m-1px {
+            margin: 1px;
+        }
+        .count {
+            background-color: #FFF;
+            height: calc(16vh + 6px);
+            line-height: 16vh;
+            margin: 2px 0;
+            width: 24px;
+            font-size: 20px;
+            text-align: center;
+            color: #bbb;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .block, .count{
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+               <!---- nav ---------->
+               <div class="row nav">
+                <div class="navBtn navBtn-green" :class="{ disappear : isEditing }" @click="openNav"></div>
+                <div class="col-10 col-sm-6 col-md-5 col-lg-4 navBar navBar-green" :class="{ disappear : isNavClose }">
+                    <div class="closeBtn closeBtn-green" @click="closeNav"></div> 
+                    <div class="d-flex" style="margin: 0; position: relative; margin-top: -30px;">
+                        <button type="button" class="btn btn-sm btn-light mr-2" @click="hideNav"> 預覽 </button>       
+                        <button type="button" class="btn btn-sm mr-3" style="background-color: #fc8671;"><a href="./index.html" class="text-white">to Djembe</a></button>         
+                    </div>          
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-block mt-4" @click="addDumBeats()"> + 4 Beats </button>
+                    <button type="button" class="btn btn-lg btn-outline-info btn-block mt-4 pt-3 pb-3" @click="output" :class="{ disappear : noData }"> 完成編輯，匯出 </button>
+                    <!-- <div>
+                        <label for="fileToLoad" class="btn btn-sm btn-outline-secondary btn-block mt-2" v-if="noData">匯入編輯資料</label>
+                        <input id="fileToLoad"  v-if="noData" type="file" @change="read"/>
+                        <button type="button" class="btn btn-sm btn-secondary btn-block mt-1" style="margin: 0;" @click="clickDownload" v-if="!noData"> 儲存編輯資料 </button>
+                    </div> -->
+                </div>              
+            </div>
+            <div id="page">
+            <!---- 標題 ---------->
+            <div class="outer borderHoverChange d-flex justify-content-center disappear" style="transition: 0s;" @click="editTitle" :class="{ active : titleShowing}">
+                <div class="title">{{title==='' ? 'DumDum 鼓譜' : title}}</div>
+            </div>
+            <div class="outer borderHoverChange pt-3 red-border border-green disappear" style="transition: 0s;" :class="{ active : titleEditing}">
+                <div class="form-row d-flex justify-content-center" style="width: 100%;">
+                    <div class="form-group col-lg-4 col-md-6">
+                        <input type="text" class="form-control" placeholder="請輸入標題" v-model="tempTitle" maxlength="30">
+                    </div>
+                    <div class="form-group col-lg-2 col-md-4">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-sm btn-outline-dark ml-3" @click="cancelTitleChange">取消</button>
+                            <button type="button" class="btn btn-sm btn-outline-info ml-2" @click="submitNewTitle">確定修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- 主要鼓譜 -->
+            <div class="d-flex justify-content-center flex-wrap" style="margin-top: -20px;">
+                <div class="four-beats mx-2 mx-lg-5 mb-5" style="position: relative;" v-for="(item, index) in dumdumList" @click="clickDumBeat(index)">
+                    <div class="d-flex bg-white">
+                        <div class="ml-4"></div>
+                        <div class="block-name m-1px">K</div>
+                        <div class="block-name m-1px">D</div>
+                        <div class="block-name m-1px">S</div>
+                    </div>
+                    <div class="d-flex one-beat border">
+                        <div>
+                            <div class="count">1</div>
+                            <div class="count">2</div>
+                            <div class="count">3</div>
+                            <div class="count">4</div>
+                        </div>
+                        <div>
+                            <div class="d-flex dumBeat" v-for="i in item">
+                                <div class="block m-1px">{{ i[0] }}</div>
+                                <div class="block m-1px">{{ i[1] }}</div>
+                                <div class="block m-1px">{{ i[2] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                                <!--- 小節操作按鈕 ----->
+                    <div class="bg-white w-100 shadow py-3 disappear" style="position: absolute; top:0;" :ref="'drumBeat'+index">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-outline-dark mr-2" @click="editDumBeats(index)">編輯</button>
+                            <button type="button" class="btn btn-outline-danger" :class="{ isabled : isEditing }" @click="deleteDumBeats(index)">刪除</button>
+                        </div>
+                        <!-- <div></div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="outer demo noborder" v-if="noData"><img src="demoDumdum.JPG" class="d-block mr-auto ml-auto"></div>
+        </div> <!-- page 結束 -->
+        
+                     <!-- 編輯器 -->
+             <!-- <div class="editing" v-if="!editClosed"> -->
+                <div class="editing" :class="{ disappear: editClosed }">
+                    <!-- <div class="editing"> -->
+                    <div class="editTitle editTitle-green">
+                        <div class="closeBtn closeBtn-green" @click="cancel"></div>
+                        <h3 class="" v-if="isNew">新增小節</h3>
+                        <h3 class="" v-else>修改小節</h3>
+                    </div> 
+                    <div class="editInner editInner-green">
+                        <div class="d-flex justify-content-center">
+                            <div class="four-beats mx-2 mx-lg-5">
+                                <div class="d-flex bg-white">
+                                    <div class="ml-4 m-2px"></div>
+                                    <div class="block-name m-1px">K</div>
+                                    <div class="block-name m-1px">D</div>
+                                    <div class="block-name m-1px">S</div>
+                                </div>
+                                <div class="d-flex one-beat border">
+                                    <div>
+                                        <div class="m-1px count shadow">1</div>
+                                        <div class="m-1px count shadow">2</div>
+                                        <div class="m-1px count shadow">3</div>
+                                        <div class="m-1px count shadow">4</div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex dumBeat" v-for="(item, index) in tempDum">
+                                            <div class="block m-1px cursor-pointer hover-green-border" @click="editDum(index, 0)">{{ item[0] }}</div>
+                                            <div class="block m-1px cursor-pointer hover-green-border" @click="editDum(index, 1)">{{ item[1] }}</div>
+                                            <div class="block m-1px cursor-pointer hover-green-border" @click="editDum(index, 2)">{{ item[2] }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center pt-3 pb-2">
+                            <button type="button" class="btn btn-secondary mr-2" @click="cancel">取消</button>
+                            <button type="button" class="btn btn-info" v-if="isNew" @click="submitNewDum">確定新增</button>
+                            <button type="button" class="btn btn-info" v-else @click="submitPatchDum">確定修改</button>
+                        </div>    
+                    </div>
+                </div>
+
+                <div class="outer editing hidden-print disappear" id="output" :class="{ active : isOutputing }" style="background-color: #fff; transition: 0s;">
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-outline-dark" @click="offOutput"> 取消 </button>
+                        <button type="button" class="btn btn-outline-info ml-5" @click="openImg" v-if="isMobile"> 匯出圖片 </button>               
+                        <button type="button" class="btn btn-outline-info ml-5" @click="saveImg" v-if="!isMobile"> 匯出圖片 </button>                
+                        <!-- <button type="button" class="btn btn-outline-info ml-2" @click="printPdf" v-if="!isMobile"> 匯出PDF </button> -->
+                        <button type="button" class="btn btn-outline-info ml-2" @click="winPrintPdf" v-if="!isMobile"> 匯出PDF </button>
+                    </div>
+                    <div class="d-flex justify-content-center mt-2" v-if="!isMobile">
+                        <small>欲匯出PDF，請在列印視窗的「目的地」選擇「另存成PDF」</small>
+                    </div>
+                </div>
+               
+        </div>
+        <div class="modal fade" id="outputModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">請點選圖片儲存</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeOutputModal">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="outputImg">
+                  ...
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3/dist/vue-loading.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script> 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.0.0/polyfills.umd.js"></script>
+    <script src="all.js"></script>
+</body>
+</html>
