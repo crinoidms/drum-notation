@@ -352,6 +352,15 @@ var app = new Vue({
             this.isNew = true;
             this.editClosed = false;
         },
+        insertBeats(drum, index) {
+            this.closeOperator();
+            let item = this.drumList[index];
+            insertIndex = this.containsKey(item, 'repeatWithNext') ? index + 2 : index +1 ;
+            this.tempDrum.type = drum;  
+            this.drumList.splice( insertIndex, 0, this.tempDrum);
+            this.selectedOrder = insertIndex;
+            this.editBeats(insertIndex);
+        },
         editBeats(drum) {
             if ( !this.isEditing) {
                 // 確定下段是否已有repeat
