@@ -128,17 +128,20 @@
                 </div>
             <!--- 小節操作按鈕 ----->
                 <div class="d-flex justify-content-center align-items-center operatorBox disappear relative" :ref="'drumBeat'+index">
-                    <div style="position: absolute; left: 5px;">
-                        <button type="button" class="btn btn-sm btn-outline-dark" :class="{ disabled : index === 0 }" @click="moveUp(index)">上移</button>
-                        <button type="button" class="btn btn-sm btn-outline-dark" :class="{ disabled : index + 1 === drumList.length }" @click="moveDown(index)">下移</button>
-<!--                         <button type="button" class="btn btn-sm btn-outline-dark ml-2"  v-if="index + 1 !== drumList.length" @click="insertBeats('Djembe', index)">+ Djembe</button>
-                        <button type="button" class="btn btn-sm btn-outline-dark"  v-if="index + 1 !== drumList.length" @click="insertBeats('Dum-Dum', index)">+ Dum</button> -->
+                    <div style="position: absolute; left: 5px; top: 0">
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-sm btn-outline-dark" :class="{ disabled : index === 0 }" @click="moveUp(index)">上移</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark" :class="{ disabled : index + 1 === drumList.length }" @click="moveDown(index)">下移</button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-dark"  v-if="index + 1 !== drumList.length" @click="insertBeats('Djembe', index)">Djembe</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark"  v-if="index + 1 !== drumList.length" @click="insertBeats('Dum-Dum', index)">Dum</button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-outline-dark mr-2" @click="editBeats(index)">編輯</button>
+                    <div class="pl-5">
+                        <button type="button" class="btn btn-outline-dark mr-1" @click="editBeats(index)">編輯</button>
                         <button type="button" class="btn btn-outline-danger" :class="{ isabled : isEditing }" @click="deleteBeats(index)">刪除</button>
                     </div>
-                    <!-- <div></div> -->
                 </div>
             </div>
         
